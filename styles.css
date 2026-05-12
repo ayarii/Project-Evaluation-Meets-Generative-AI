@@ -211,8 +211,8 @@ input, select, textarea{
 }
 textarea{ resize: vertical; min-height: 90px; }
 input:focus, select:focus, textarea:focus{
-  border-color: rgba(193,18,58,.55);
-  box-shadow: 0 0 0 4px rgba(193,18,58,.12);
+  border-color: rgba(18, 97, 193, 0.55);
+  box-shadow: 0 0 0 4px rgba(18, 97, 193, 0.55);
 }
 
 .callout{
