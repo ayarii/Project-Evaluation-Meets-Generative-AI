@@ -238,6 +238,11 @@
     return { bySection, total: clamp(total, 0, 100) };
   }
 
+  function toScoreOutOf20(totalOn100) {
+    const raw = (totalOn100 / 100) * 20;
+    return Math.round(raw * 10) / 10;
+  }
+
   function renderRubric(mount, state) {
     mount.innerHTML = "";
 
@@ -393,6 +398,9 @@
     const totalScore = $("#totalScore");
     if (totalScore) totalScore.textContent = String(total);
 
+    const totalScore20 = $("#totalScore20");
+    if (totalScore20) totalScore20.textContent = String(toScoreOutOf20(total));
+
     const pbar = $("#totalProgress");
     const prog = $(".progress");
     if (pbar) pbar.style.width = `${total}%`;
@@ -461,7 +469,7 @@
         meta: state.meta,
         scores: state.scores,
         notes: state.notes,
-        totals: { bySection, total },
+        totals: { bySection, total, totalOn20: toScoreOutOf20(total) },
       };
 
       const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
@@ -499,7 +507,8 @@
         ["Performance & qualité", bySection.quality ?? 0, 30],
         ["Engagement", bySection.engagement ?? 0, 20],
         ["Usage IA", bySection.ai ?? 0, 10],
-        ["TOTAL", total, 100],
+        ["TOTAL (/100)", total, 100],
+        ["TOTAL (/20)", toScoreOutOf20(total), 20],
       ];
       const wsSummary = XLSX.utils.aoa_to_sheet(summaryRows);
       wsSummary["!cols"] = [{ wch: 26 }, { wch: 10 }, { wch: 8 }];

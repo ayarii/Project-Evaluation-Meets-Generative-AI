@@ -3,131 +3,300 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Grille d’évaluation des projets — IA générative</title>
-    <meta name="description" content="Grille d’évaluation (100 pts) pour projets à l’ère de l’IA générative." />
+    <title>Évaluation des projets à l’ère de l’IA générative</title>
+    <meta
+      name="description"
+      content="Grille d’évaluation pédagogique pour projets étudiants : technique, qualité, engagement et usage responsable de l’IA."
+    />
     <link rel="stylesheet" href="./styles.css" />
   </head>
-  <body>
-    <header class="site-header">
-      <div class="container header-grid">
-        <div>
-          <h1>Grille d’évaluation des projets<br /><span>à l’ère de l’IA générative</span></h1>
-          <p class="sub">
-            Remplissez les notes par critère, ajoutez des observations, puis imprimez ou exportez.
+  <body class="home-body">
+    <nav class="top-nav top-nav-home">
+      <div class="container nav-inner">
+        <a class="nav-brand" href="./index.html">Évaluation IA</a>
+        <div class="nav-links">
+          <a class="nav-link is-active" href="./index.html" aria-current="page">Accueil</a>
+          <a class="nav-link nav-link-cta" href="./grille.html">Commencer l’évaluation</a>
+        </div>
+      </div>
+    </nav>
+
+    <header class="home-hero">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <p class="kicker">Esprit · Pédagogie &amp; numérique</p>
+          <h1 class="hero-title">
+            Évaluer les projets<br />
+            <span>à l’ère de l’IA générative</span>
+          </h1>
+          <p class="hero-lead">
+            Une grille structurée sur 100 points pour noter la maîtrise technique, la qualité du projet,
+            l’engagement des étudiants et leur usage réfléchi de l’intelligence artificielle.
           </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary btn-lg" href="./grille.html">Ouvrir la grille d’évaluation</a>
+            <a class="btn btn-ghost btn-lg" href="#axes">Découvrir la méthode</a>
+          </div>
+          <div class="hero-badges">
+            <span class="hero-badge">100 points</span>
+            <span class="hero-badge">≈ /20 automatique</span>
+            <span class="hero-badge">Échelle IA N1–N5</span>
+            <span class="hero-badge">Export PDF · Excel · JSON</span>
+          </div>
         </div>
 
-        <div class="score-card" aria-live="polite">
-          <div class="score-top">
-            <div>
-              <div class="label">Note finale</div>
-              <div class="score">
-                <span id="totalScore">0</span><span class="score-den">/ 100</span>
+        <div class="hero-visual" aria-hidden="true">
+          <div class="score-preview">
+            <div class="score-preview-head">
+              <span class="label">Aperçu de la note</span>
+              <span class="score-preview-tag">Live</span>
+            </div>
+            <div class="score-preview-main">
+              <span class="score-preview-value">82</span>
+              <span class="score-preview-den">/ 100</span>
+            </div>
+            <div class="score-preview-sub">≈ 16,4 / 20</div>
+            <div class="score-preview-bars">
+              <div class="score-preview-row">
+                <span>Technique</span>
+                <div class="mini-bar"><i style="width: 85%"></i></div>
+                <strong>34/40</strong>
+              </div>
+              <div class="score-preview-row">
+                <span>Qualité</span>
+                <div class="mini-bar"><i style="width: 77%"></i></div>
+                <strong>23/30</strong>
+              </div>
+              <div class="score-preview-row">
+                <span>Engagement</span>
+                <div class="mini-bar"><i style="width: 80%"></i></div>
+                <strong>16/20</strong>
+              </div>
+              <div class="score-preview-row">
+                <span>Usage IA</span>
+                <div class="mini-bar"><i style="width: 90%"></i></div>
+                <strong>9/10</strong>
               </div>
             </div>
-            <div class="score-actions">
-              <button id="btnPrint" class="btn btn-ghost" type="button">Imprimer</button>
-              <button id="btnPdf" class="btn btn-ghost" type="button">Exporter (PDF)</button>
-              <button id="btnExport" class="btn btn-primary" type="button">Exporter (JSON)</button>
-              <button id="btnExcel" class="btn btn-primary" type="button">Exporter (Excel)</button>
-            </div>
-          </div>
-          <div class="score-bottom">
-            <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-              <div class="progress-bar" id="totalProgress"></div>
-            </div>
-            <div class="small muted" id="autosaveStatus">Sauvegarde locale : active</div>
           </div>
         </div>
       </div>
     </header>
 
-    <main class="container">
-      <section class="card" aria-labelledby="infoTitle">
-        <div class="card-head">
-          <h2 id="infoTitle">Informations projet</h2>
-          <div class="card-actions">
-            <button id="btnReset" class="btn btn-danger" type="button">Réinitialiser</button>
+    <main>
+      <section class="home-section" id="contexte">
+        <div class="container">
+          <div class="section-intro">
+            <p class="kicker">Pourquoi cet outil ?</p>
+            <h2>Évaluer autrement, sans ignorer l’IA</h2>
+            <p class="section-lead">
+              L’IA générative transforme la façon dont les étudiants conçoivent, codent et rédigent.
+              Cette grille aide les enseignants à rester exigeants sur les compétences réelles tout en
+              reconnaissant — et en questionnant — l’usage des outils d’IA.
+            </p>
+          </div>
+
+          <div class="feature-grid">
+            <article class="feature-card">
+              <div class="feature-icon">01</div>
+              <h3>Critères explicites</h3>
+              <p>Chaque axe est décliné en indicateurs observables, preuves attendues et niveaux Bloom.</p>
+            </article>
+            <article class="feature-card">
+              <div class="feature-icon">02</div>
+              <h3>IA traçable</h3>
+              <p>L’échelle N1 à N5 distingue l’absence d’IA de l’exploration créative, avec des preuves concrètes.</p>
+            </article>
+            <article class="feature-card">
+              <div class="feature-icon">03</div>
+              <h3>Prêt pour la soutenance</h3>
+              <p>Notes, observations par critère et synthèse enseignant : tout est centralisé et exportable.</p>
+            </article>
           </div>
         </div>
+      </section>
 
-        <form class="form-grid" id="metaForm" autocomplete="off">
-          <label class="field">
-            <span>Projet</span>
-            <input name="projectName" type="text" placeholder="Nom du projet" />
-          </label>
-          <label class="field">
-            <span>Groupe / Individuel</span>
-            <input name="mode" type="text" placeholder="Individuel / Groupe / Mixte…" />
-          </label>
-          <label class="field">
-            <span>Étudiant(e)</span>
-            <input name="student" type="text" placeholder="Nom(s) étudiant(s)" />
-          </label>
-          <label class="field">
-            <span>Lien GitHub</span>
-            <input name="github" type="url" placeholder="https://github.com/…" />
-          </label>
-          <label class="field">
-            <span>Date de validation</span>
-            <input name="date" type="date" />
-          </label>
-          <div class="callout">
-            <div class="callout-title">Périmètre d’évaluation</div>
-            <div class="callout-body">
-              <label class="check">
-                <input type="checkbox" name="scope" value="individu" />
-                <span>Individu seul</span>
-              </label>
-              <label class="check">
-                <input type="checkbox" name="scope" value="groupe" />
-                <span>Groupe (note collective)</span>
-              </label>
-              <label class="check">
-                <input type="checkbox" name="scope" value="mixte" />
-                <span>Mixte</span>
-              </label>
-            </div>
+      <section class="home-section home-section-alt" id="axes">
+        <div class="container">
+          <div class="section-intro">
+            <p class="kicker">Structure de la grille</p>
+            <h2>Quatre axes, cent points</h2>
+            <p class="section-lead">
+              La note finale se calcule automatiquement. Une conversion approximative sur 20 est affichée en direct.
+            </p>
           </div>
-        </form>
-      </section>
 
-      <section class="rubric" aria-label="Grille d’évaluation">
-        <div id="rubricMount"></div>
-      </section>
+          <div class="axes-grid">
+            <article class="axis-card axis-tech">
+              <div class="axis-top">
+                <span class="axis-num">40 pts</span>
+                <h3>Maîtrise technique</h3>
+              </div>
+              <ul>
+                <li>Fonctionnalités attendues (30 pts)</li>
+                <li>Compréhension &amp; architecture (10 pts)</li>
+              </ul>
+              <p class="axis-bloom">Bloom : Appliquer → Analyser</p>
+            </article>
 
-      <section class="card" aria-labelledby="iaScaleTitle">
-        <div class="card-head">
-          <h2 id="iaScaleTitle">Échelle de l’usage de l’IA — référence évaluateur</h2>
+            <article class="axis-card axis-quality">
+              <div class="axis-top">
+                <span class="axis-num">30 pts</span>
+                <h3>Performance &amp; qualité</h3>
+              </div>
+              <ul>
+                <li>Qualité du code et stabilité (15 pts)</li>
+                <li>Expérience utilisateur UX/UI (15 pts)</li>
+              </ul>
+              <p class="axis-bloom">Bloom : Analyser → Créer</p>
+            </article>
+
+            <article class="axis-card axis-engagement">
+              <div class="axis-top">
+                <span class="axis-num">20 pts</span>
+                <h3>Engagement &amp; démarche</h3>
+              </div>
+              <ul>
+                <li>Collaboration Git / GitHub (8 pts)</li>
+                <li>Autonomie &amp; initiative (6 pts)</li>
+                <li>Organisation &amp; planification (6 pts)</li>
+              </ul>
+              <p class="axis-bloom">Bloom : Appliquer → Évaluer</p>
+            </article>
+
+            <article class="axis-card axis-ai">
+              <div class="axis-top">
+                <span class="axis-num">10 pts</span>
+                <h3>Usage de l’IA générative</h3>
+              </div>
+              <ul>
+                <li>Niveau d’usage cohérent (4 pts)</li>
+                <li>Justification de l’usage (3 pts)</li>
+                <li>Esprit critique face à l’IA (3 pts)</li>
+              </ul>
+              <p class="axis-bloom">Bloom : Comprendre → Évaluer</p>
+            </article>
+          </div>
         </div>
-
-        <p class="small muted">
-          Tableau indicatif. Chaque niveau doit être étayé par des comportements observables et des preuves traçables.
-        </p>
-
-        <div class="ia-scale" id="iaScaleMount"></div>
       </section>
 
-      <section class="card" aria-labelledby="finalObsTitle">
-        <div class="card-head">
-          <h2 id="finalObsTitle">Observations de l’enseignant(e)</h2>
+      <section class="home-section" id="echelle">
+        <div class="container">
+          <div class="section-intro">
+            <p class="kicker">Référence évaluateur</p>
+            <h2>L’échelle d’usage de l’IA (N1 → N5)</h2>
+            <p class="section-lead">
+              Inspirée de l’AI Assessment Scale, chaque niveau doit être étayé par des comportements
+              observables — pas seulement par une déclaration de l’étudiant.
+            </p>
+          </div>
+
+          <div class="ia-ladder">
+            <article class="ia-step ia-step-n1">
+              <span class="ia-step-level">N1</span>
+              <div>
+                <h3>Sans IA</h3>
+                <p>Travail fondé sur documentation, ressources humaines et réflexion personnelle.</p>
+              </div>
+            </article>
+            <article class="ia-step ia-step-n2">
+              <span class="ia-step-level">N2</span>
+              <div>
+                <h3>Préparation avec l’IA</h3>
+                <p>Idéation, recherche, brainstorming — puis reformulation en mots propres.</p>
+              </div>
+            </article>
+            <article class="ia-step ia-step-n3">
+              <span class="ia-step-level">N3</span>
+              <div>
+                <h3>Collaboration avec l’IA</h3>
+                <p>Assistant pour code ou texte, avec relecture et corrections systématiques.</p>
+              </div>
+            </article>
+            <article class="ia-step ia-step-n4">
+              <span class="ia-step-level">N4</span>
+              <div>
+                <h3>Intégration totale</h3>
+                <p>IA orchestrée à chaque étape, avec choix de modèles et évaluation des limites.</p>
+              </div>
+            </article>
+            <article class="ia-step ia-step-n5">
+              <span class="ia-step-level">N5</span>
+              <div>
+                <h3>Exploration créative</h3>
+                <p>Usage innovant, réflexif, avec questionnement des biais et expérimentations documentées.</p>
+              </div>
+            </article>
+          </div>
         </div>
-        <label class="field">
-          <span>Observations</span>
-          <textarea name="teacherNotes" id="teacherNotes" rows="5" placeholder="Observations…"></textarea>
-        </label>
       </section>
 
-      <footer class="site-footer">
-        <div class="small muted">
-          Références : <a href="https://aiassessmentscale.com/" target="_blank" rel="noreferrer">aiassessmentscale.com</a>
-          — <a href="https://open-publishing.org/journals/index.php/jutlp/article/view/810" target="_blank" rel="noreferrer">JUTLP (article)</a>
+      <section class="home-section home-section-alt" id="utilisation">
+        <div class="container">
+          <div class="section-intro">
+            <p class="kicker">Mode d’emploi</p>
+            <h2>De la soutenance au bulletin</h2>
+          </div>
+
+          <ol class="steps-list">
+            <li>
+              <span class="step-num">1</span>
+              <div>
+                <h3>Renseignez le projet</h3>
+                <p>Nom, étudiant(s), lien GitHub, périmètre individuel ou groupe.</p>
+              </div>
+            </li>
+            <li>
+              <span class="step-num">2</span>
+              <div>
+                <h3>Notez critère par critère</h3>
+                <p>Attribuez une note sur chaque indicateur et documentez vos observations.</p>
+              </div>
+            </li>
+            <li>
+              <span class="step-num">3</span>
+              <div>
+                <h3>Confrontez l’usage IA</h3>
+                <p>Vérifiez la cohérence entre le niveau déclaré, les preuves et la soutenance orale.</p>
+              </div>
+            </li>
+            <li>
+              <span class="step-num">4</span>
+              <div>
+                <h3>Exportez et archivez</h3>
+                <p>Impression PDF, export Excel ou JSON — sauvegarde locale automatique incluse.</p>
+              </div>
+            </li>
+          </ol>
         </div>
-      </footer>
+      </section>
+
+      <section class="home-cta">
+        <div class="container cta-inner">
+          <div>
+            <p class="kicker">Prêt à évaluer ?</p>
+            <h2>Lancez une évaluation en quelques minutes</h2>
+            <p class="section-lead">
+              La grille se sauvegarde automatiquement dans votre navigateur. Reprenez une évaluation à tout moment.
+            </p>
+          </div>
+          <a class="btn btn-primary btn-lg" href="./grille.html">Accéder à la grille</a>
+        </div>
+      </section>
     </main>
 
-    <!-- Export Excel (.xlsx) via SheetJS (client-side) -->
-    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js" defer></script>
-    <script src="./app.js" defer></script>
+    <footer class="home-footer">
+      <div class="container home-footer-inner">
+        <div>
+          <strong>Évaluation IA générative</strong>
+          <p class="small muted">Grille pédagogique pour projets étudiants — Esprit</p>
+        </div>
+        <div class="home-footer-links">
+          <a href="./grille.html">Grille d’évaluation</a>
+          <a href="https://aiassessmentscale.com/" target="_blank" rel="noreferrer">AI Assessment Scale</a>
+          <a href="https://open-publishing.org/journals/index.php/jutlp/article/view/810" target="_blank" rel="noreferrer">JUTLP</a>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>
