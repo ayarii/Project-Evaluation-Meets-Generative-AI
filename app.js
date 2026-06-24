@@ -1,138 +1,133 @@
 /* eslint-disable no-alert */
 (() => {
-  const STORAGE_KEY = "grille-evaluation-ia:v1";
+  const STORAGE_KEY = "edueval-ai-rubric:v1";
 
   const rubric = [
     {
       id: "tech",
-      title: "1. Maîtrise technique",
+      title: "1. Technical mastery",
       max: 40,
       criteria: [
         {
           id: "tech_func",
-          title: "Fonctionnalités attendues",
+          title: "Expected features",
           max: 30,
-          bloom: "Appliquer",
-          description:
-            "Implémentation correcte et complète des fonctionnalités demandées.",
+          bloom: "Apply",
+          description: "Correct and complete implementation of the required features.",
           indicators: [
-            "Toutes les fonctionnalités du cahier des charges sont présentes, testables et fonctionnelles sans erreur critique.",
+            "All specification features are present, testable, and functional without critical errors.",
           ],
-          evidence: ["Historique Git (commits)", "Démo en soutenance", "Tests exécutés/passés"],
+          evidence: ["Git history (commits)", "Defense demo", "Tests run/passed"],
         },
         {
           id: "tech_understand",
-          title: "Compréhension technique",
+          title: "Technical understanding",
           max: 10,
-          bloom: "Comprendre → Analyser",
-          description:
-            "Capacité à expliquer le fonctionnement, les choix techniques et l’architecture.",
+          bloom: "Understand → Analyze",
+          description: "Ability to explain how the project works, technical choices, and architecture.",
           indicators: [
-            "Réponses précises aux questions de l’enseignant, justification des choix de librairies/architecture.",
+            "Precise answers to instructor questions; justified library and architecture choices.",
           ],
-          evidence: ["Mini-soutenance orale", "Justification écrite des choix techniques", "Schéma d’architecture"],
+          evidence: ["Short oral defense", "Written technical justification", "Architecture diagram"],
         },
       ],
     },
     {
       id: "quality",
-      title: "2. Performance & qualité du projet",
+      title: "2. Performance & project quality",
       max: 30,
       criteria: [
         {
           id: "quality_code",
-          title: "Qualité globale du code et du projet",
+          title: "Overall code and project quality",
           max: 15,
-          bloom: "Analyser",
-          description:
-            "Stabilité, cohérence, absence de bugs majeurs, lisibilité et maintenabilité du code.",
-          indicators: ["Code structuré et commenté, pas d’erreur console en production, nomenclature cohérente."],
-          evidence: ["Revue de code (capture ou partage)", "README complété", "Aucune erreur critique en démo"],
+          bloom: "Analyze",
+          description: "Stability, consistency, no major bugs, readable and maintainable code.",
+          indicators: ["Structured, commented code; no console errors in production; consistent naming."],
+          evidence: ["Code review (screenshot or share)", "Completed README", "No critical errors in demo"],
         },
         {
           id: "quality_ux",
-          title: "Expérience utilisateur (UX/UI)",
+          title: "User experience (UX/UI)",
           max: 15,
-          bloom: "Analyser → Créer",
-          description: "Navigation logique, ergonomie, fluidité et clarté de l’interface.",
+          bloom: "Analyze → Create",
+          description: "Logical navigation, ergonomics, fluidity, and interface clarity.",
           indicators: [
-            "Un utilisateur non initialisé peut utiliser l’interface sans aide, les états d’erreur sont gérés.",
+            "A new user can use the interface without help; error states are handled.",
           ],
-          evidence: ["Capture d’écran annotée", "Scénario de test utilisateur", "Retour de pair"],
+          evidence: ["Annotated screenshot", "User test scenario", "Peer feedback"],
         },
       ],
     },
     {
       id: "engagement",
-      title: "3. Engagement et démarche de travail",
+      title: "3. Engagement & work process",
       max: 20,
       criteria: [
         {
           id: "eng_collab",
-          title: "Usage des outils de collaboration (Git, GitHub Projects…)",
+          title: "Collaboration tools (Git, GitHub Projects…)",
           max: 8,
-          bloom: "Appliquer → Évaluer",
-          description:
-            "Commits réguliers et messages clairs, traçabilité de l’évolution, travail collaboratif visible.",
-          indicators: ["≥ 1 commit par session, messages descriptifs, branches utilisées si groupe."],
-          evidence: ["Historique Git public", "GitHub Projects / Issues", "Logs de contribution"],
+          bloom: "Apply → Evaluate",
+          description: "Regular commits with clear messages, traceable progress, visible collaboration.",
+          indicators: ["≥ 1 commit per session, descriptive messages, branches used for group work."],
+          evidence: ["Public Git history", "GitHub Projects / Issues", "Contribution logs"],
         },
         {
           id: "eng_autonomy",
-          title: "Autonomie & initiative",
+          title: "Autonomy & initiative",
           max: 6,
-          bloom: "Créer",
-          description:
-            "Recherche personnelle, résolution de problèmes sans aide extérieure systématique, prise d’initiative.",
-          indicators: ["Problèmes non-spécifiés résolus, fonctionnalités bonus ajoutées."],
-          evidence: ["Journal de bord", "Historique des recherches", "Entretien oral"],
+          bloom: "Create",
+          description: "Independent research, problem-solving without constant external help, initiative.",
+          indicators: ["Unspecified problems solved, bonus features added."],
+          evidence: ["Work log", "Research history", "Oral interview"],
         },
         {
           id: "eng_plan",
-          title: "Organisation & planification du travail",
+          title: "Organization & planning",
           max: 6,
-          bloom: "Évaluer",
-          description: "Structuration des tâches, respect des étapes et gestion du temps.",
-          indicators: ["Planning initial respecté, tickets GitHub fermés à temps, aucun sprint vide."],
-          evidence: ["Planning produit (board GitHub)", "Jalons respectés", "Journal de bord"],
+          bloom: "Evaluate",
+          description: "Task structuring, milestone adherence, and time management.",
+          indicators: ["Initial plan followed, GitHub tickets closed on time, no empty sprints."],
+          evidence: ["Product board (GitHub)", "Milestones met", "Work log"],
         },
       ],
     },
     {
       id: "ai",
-      title: "4. Usage de l’IA générative",
+      title: "4. Generative AI usage",
       max: 10,
       criteria: [
         {
           id: "ai_level",
-          title: "Niveau d’usage de l’IA (selon l’échelle 1–5)",
+          title: "AI usage level (scale 1–5)",
           max: 4,
-          bloom: "Analyser",
-          description: "Cohérence entre le niveau déclaré, l’usage réel observé et les productions.",
-          indicators: ["Le niveau déclaré est étayé par des preuves (captures, logs). Pas d’écart entre discours et pratique."],
-          evidence: ["Captures des échanges IA", "Logs de prompts", "Entretien oral"],
+          bloom: "Analyze",
+          description: "Consistency between declared level, observed usage, and deliverables.",
+          indicators: ["Declared level backed by evidence (screenshots, logs). No gap between claims and practice."],
+          evidence: ["AI exchange screenshots", "Prompt logs", "Oral interview"],
         },
         {
           id: "ai_justify",
-          title: "Justification de l’usage de l’IA",
+          title: "Justification of AI usage",
           max: 3,
-          bloom: "Comprendre → Analyser",
-          description: "Capacité à expliquer pourquoi, quand et comment l’IA a été utilisée.",
+          bloom: "Understand → Analyze",
+          description: "Ability to explain why, when, and how AI was used.",
           indicators: [
-            "Exemples précis (« j’ai utilisé ChatGPT pour générer X parce que… »).",
+            "Specific examples (“I used ChatGPT to generate X because…”).",
           ],
-          evidence: ["Journal de bord réflexif", "Section « Usage IA » dans README", "Soutenance orale"],
+          evidence: ["Reflective work log", "“AI usage” section in README", "Oral defense"],
         },
         {
           id: "ai_critical",
-          title: "Esprit critique face aux productions de l’IA",
+          title: "Critical thinking toward AI output",
           max: 3,
-          bloom: "Évaluer",
-          description: "Capacité à détecter erreurs, limites, biais et à corriger les propositions de l’IA.",
+          bloom: "Evaluate",
+          description: "Ability to detect errors, limits, biases, and correct AI suggestions.",
           indicators: [
-            "Au moins un exemple documenté de correction/rejet d’une réponse IA ; l’étudiant ne valide pas aveuglément.",
+            "At least one documented example of correcting/rejecting an AI response; student does not blindly accept output.",
           ],
-          evidence: ["Capture avant/après correction IA", "Commentaire de code explic.", "Soutenance : question critique"],
+          evidence: ["Before/after AI correction screenshot", "Explicit code comment", "Defense: critical question"],
         },
       ],
     },
@@ -141,42 +136,41 @@
   const iaScale = [
     {
       level: "N1",
-      label: "Sans IA",
+      label: "No AI",
       behaviors:
-        "Aucun outil IA utilisé. L’étudiant travaille uniquement avec des ressources humaines, documentation classique.",
-      evidence: "Déclaration écrite + aucune mention d’IA dans le journal de bord.",
+        "No AI tools used. The student works only with human resources and standard documentation.",
+      evidence: "Written declaration + no mention of AI in the work log.",
     },
     {
       level: "N2",
-      label: "Préparation avec l’IA",
+      label: "Preparation with AI",
       behaviors:
-        "IA utilisée pour idéation, recherche, brainstorming. L’étudiant reformule ensuite en ses propres mots.",
-      evidence:
-        "Captures d’écran des prompts de recherche ; sections du journal de bord pré-rédaction.",
+        "AI used for ideation, research, brainstorming. The student then rewrites in their own words.",
+      evidence: "Screenshots of research prompts; pre-writing sections in the work log.",
     },
     {
       level: "N3",
-      label: "Collaboration avec l’IA",
+      label: "Collaboration with AI",
       behaviors:
-        "IA comme assistant : génération de code, amélioration de texte, correction. L’étudiant revérifie et ajuste chaque sortie.",
+        "AI as assistant: code generation, text improvement, correction. The student reviews and adjusts every output.",
       evidence:
-        "Log des échanges IA (ChatGPT, Copilot…) ; éléments indiquant l’origine IA et les corrections effectuées.",
+        "Log of AI exchanges (ChatGPT, Copilot…); items showing AI origin and corrections made.",
     },
     {
       level: "N4",
-      label: "Intégration totale de l’IA",
+      label: "Full AI integration",
       behaviors:
-        "IA intégrée à toutes les étapes. L’étudiant orchestre les outils, choisit les bons modèles et évalue les limites.",
+        "AI integrated at every stage. The student orchestrates tools, chooses models, and assesses limits.",
       evidence:
-        "Pipeline détaillé (quel outil, à quelle étape) ; exemples de rejets/corrections de sorties IA ; soutenance orale.",
+        "Detailed pipeline (which tool, at which stage); examples of rejected/corrected AI outputs; oral defense.",
     },
     {
       level: "N5",
-      label: "Exploration créative avec l’IA",
+      label: "Creative exploration with AI",
       behaviors:
-        "IA utilisée de manière innovante et réflexive. L’étudiant questionne les biais, documente ses expérimentations, crée des usages nouveaux.",
+        "AI used innovatively and reflectively. The student questions biases, documents experiments, creates new usages.",
       evidence:
-        "Rapport réflexif sur l’usage IA ; expérimentations documentées ; exemples de détournements créatifs ou critiques.",
+        "Reflective report on AI usage; documented experiments; examples of creative or critical repurposing.",
     },
   ];
 
@@ -221,7 +215,7 @@
   function saveState(state) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     const el = $("#autosaveStatus");
-    if (el) el.textContent = `Sauvegardé à ${new Date().toLocaleTimeString()}`;
+    if (el) el.textContent = `Saved at ${new Date().toLocaleTimeString()}`;
   }
 
   function computeTotals(state) {
@@ -243,6 +237,15 @@
     return Math.round(raw * 10) / 10;
   }
 
+  function escapeHtml(str) {
+    return String(str)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
   function renderRubric(mount, state) {
     mount.innerHTML = "";
 
@@ -255,7 +258,7 @@
       head.className = "section-head";
       head.innerHTML = `
         <h3 class="section-title">${section.title}</h3>
-        <div class="pill" title="Total de l’axe">
+        <div class="pill" title="Section total">
           <span>Total</span>
           <strong><span data-section-total="${section.id}">0</span> / ${section.max}</strong>
         </div>
@@ -285,11 +288,11 @@
           <div class="criterion-grid">
             <div class="desc">
               <div><b>Description:</b> ${c.description}</div>
-              <div style="margin-top:8px"><b>Indicateurs:</b></div>
+              <div style="margin-top:8px"><b>Indicators:</b></div>
               <ul>
                 ${c.indicators.map((x) => `<li>${x}</li>`).join("")}
               </ul>
-              <div style="margin-top:8px"><b>Preuves attendues:</b></div>
+              <div style="margin-top:8px"><b>Expected evidence:</b></div>
               <ul>
                 ${c.evidence.map((x) => `<li>${x}</li>`).join("")}
               </ul>
@@ -298,8 +301,8 @@
             <div class="inputs">
               <div class="score-input">
                 <div>
-                  <div class="label2">Note</div>
-                  <div class="small muted">0 à ${c.max}</div>
+                  <div class="label2">Score</div>
+                  <div class="small muted">0 to ${c.max}</div>
                 </div>
                 <input
                   type="number"
@@ -308,12 +311,12 @@
                   max="${c.max}"
                   step="0.5"
                   value="${current}"
-                  aria-label="Note pour ${c.title}"
+                  aria-label="Score for ${c.title}"
                   data-score-input="${c.id}"
                 />
               </div>
               <label class="field">
-                <span>Observations (critère)</span>
+                <span>Observations (criterion)</span>
                 <textarea rows="3" data-note-input="${c.id}" placeholder="Notes / justifications…">${escapeHtml(
                   note
                 )}</textarea>
@@ -330,61 +333,34 @@
   }
 
   function renderIaScale(mount) {
+    const rows = iaScale
+      .map(
+        (row, i) => `
+          <tr class="ia-row-n${i + 1}">
+            <td class="level">${row.level}</td>
+            <td class="label">${row.label}</td>
+            <td>${row.behaviors}</td>
+            <td>${row.evidence}</td>
+          </tr>
+        `
+      )
+      .join("");
+
     mount.innerHTML = `
-      <div class="ia-table-wrap" role="region" aria-label="Tableau indicatif de l’échelle d’usage de l’IA">
+      <div class="ia-table-wrap" role="region" aria-label="Indicative AI usage scale table">
         <table class="ia-table">
           <thead>
             <tr>
-              <th>Niveau</th>
+              <th>Level</th>
               <th>Label</th>
-              <th>Comportements observables</th>
-              <th>Preuves attendues</th>
+              <th>Observable behaviors</th>
+              <th>Expected evidence</th>
             </tr>
           </thead>
-          <tbody>
-            <tr class="ia-row-n1">
-              <td class="level">N1</td>
-              <td class="label">Sans IA</td>
-              <td>Aucun outil IA utilisé. L’étudiant travaille uniquement avec des ressources humaines, documentation classique.</td>
-              <td>Déclaration écrite + aucune mention d’IA dans le journal de bord.</td>
-            </tr>
-            <tr class="ia-row-n2">
-              <td class="level">N2</td>
-              <td class="label">Préparation avec l’IA</td>
-              <td>IA utilisée pour idéation, recherche, brainstorming. L’étudiant reformule ensuite en ses propres mots.</td>
-              <td>Captures d’écran des prompts de recherche ; sections du journal de bord pré-rédaction.</td>
-            </tr>
-            <tr class="ia-row-n3">
-              <td class="level">N3</td>
-              <td class="label">Collaboration avec l’IA</td>
-              <td>IA comme assistant : génération de code, amélioration de texte, correction. L’étudiant revérifie et ajuste chaque sortie.</td>
-              <td>Log des échanges IA (ChatGPT, Copilot…) ; éléments indiquant l’origine IA et les corrections effectuées.</td>
-            </tr>
-            <tr class="ia-row-n4">
-              <td class="level">N4</td>
-              <td class="label">Intégration totale de l’IA</td>
-              <td>IA intégrée à toutes les étapes. L’étudiant orchestre les outils, choisit les bons modèles et évalue les limites.</td>
-              <td>Pipeline détaillé (quel outil, à quelle étape) ; exemples de rejets/corrections de sortie IA ; soutenance orale.</td>
-            </tr>
-            <tr class="ia-row-n5">
-              <td class="level">N5</td>
-              <td class="label">Exploration créative avec l’IA</td>
-              <td>IA utilisée de manière innovante et réflexive. L’étudiant questionne les biais, documente ses expérimentations, crée des usages nouveaux.</td>
-              <td>Rapport réflexif sur l’usage IA ; expérimentations documentées ; exemples de détournements créatifs ou critiques.</td>
-            </tr>
-          </tbody>
+          <tbody>${rows}</tbody>
         </table>
       </div>
     `;
-  }
-
-  function escapeHtml(str) {
-    return String(str)
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;")
-      .replaceAll("'", "&#039;");
   }
 
   function updateTotalsUI(state) {
@@ -405,6 +381,151 @@
     const prog = $(".progress");
     if (pbar) pbar.style.width = `${total}%`;
     if (prog) prog.setAttribute("aria-valuenow", String(total));
+  }
+
+  function hydrateMeta(state) {
+    const metaForm = $("#metaForm");
+    if (metaForm) {
+      const setVal = (name, val) => {
+        const el = $(`[name="${name}"]`, metaForm);
+        if (el && "value" in el) el.value = String(val ?? "");
+      };
+      setVal("projectName", state.meta.projectName);
+      setVal("mode", state.meta.mode);
+      setVal("student", state.meta.student);
+      setVal("github", state.meta.github);
+      setVal("date", state.meta.date);
+
+      const scopes = new Set(state.meta.scope ?? []);
+      $$('input[name="scope"]', metaForm).forEach((cb) => {
+        cb.checked = scopes.has(cb.value);
+      });
+    }
+
+    const teacherNotes = $("#teacherNotes");
+    if (teacherNotes) teacherNotes.value = state.meta.teacherNotes ?? "";
+  }
+
+  function resetForm(state) {
+    const mount = $("#rubricMount");
+    const fresh = emptyState();
+    state.meta = fresh.meta;
+    state.scores = fresh.scores;
+    state.notes = fresh.notes;
+    localStorage.removeItem(STORAGE_KEY);
+    hydrateMeta(state);
+    if (mount) renderRubric(mount, state);
+    updateTotalsUI(state);
+    const el = $("#autosaveStatus");
+    if (el) el.textContent = "Form reset — ready for next evaluation";
+  }
+
+  function downloadJson(state) {
+    const { bySection, total } = computeTotals(state);
+    const payload = {
+      exportedAt: new Date().toISOString(),
+      meta: state.meta,
+      scores: state.scores,
+      notes: state.notes,
+      totals: { bySection, total, totalOn20: toScoreOutOf20(total) },
+    };
+
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    const base = (state.meta.projectName || "evaluation-rubric").trim().replaceAll(/\s+/g, "_");
+    a.download = `${base || "evaluation-rubric"}_${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function downloadExcel(state) {
+    const XLSX = /** @type {any} */ (globalThis.XLSX);
+    if (!XLSX) {
+      alert("Excel export unavailable (XLSX library not loaded). Check your internet connection.");
+      return false;
+    }
+
+    const { bySection, total } = computeTotals(state);
+    const baseName = (state.meta.projectName || "evaluation-rubric")
+      .trim()
+      .replaceAll(/\s+/g, "_")
+      .slice(0, 60);
+
+    const wb = XLSX.utils.book_new();
+
+    const summaryRows = [
+      ["Axis", "Score", "Max"],
+      ["Technical mastery", bySection.tech ?? 0, 40],
+      ["Performance & quality", bySection.quality ?? 0, 30],
+      ["Engagement", bySection.engagement ?? 0, 20],
+      ["AI usage", bySection.ai ?? 0, 10],
+      ["TOTAL (/100)", total, 100],
+      ["TOTAL (/20)", toScoreOutOf20(total), 20],
+    ];
+    const wsSummary = XLSX.utils.aoa_to_sheet(summaryRows);
+    wsSummary["!cols"] = [{ wch: 26 }, { wch: 10 }, { wch: 8 }];
+    XLSX.utils.book_append_sheet(wb, wsSummary, "Summary");
+
+    const detailHeader = ["Axis", "Criterion", "Bloom", "Score", "Max", "Description", "Indicators", "Evidence", "Observations"];
+    const detailRows = [detailHeader];
+    for (const section of rubric) {
+      for (const c of section.criteria) {
+        const score = clamp(Number(state.scores[c.id] ?? 0), 0, c.max);
+        const obs = String(state.notes[c.id] ?? "");
+        detailRows.push([
+          section.title,
+          c.title,
+          c.bloom,
+          score,
+          c.max,
+          c.description,
+          (c.indicators || []).join(" | "),
+          (c.evidence || []).join(" | "),
+          obs,
+        ]);
+      }
+    }
+    const wsDetails = XLSX.utils.aoa_to_sheet(detailRows);
+    wsDetails["!cols"] = [
+      { wch: 26 },
+      { wch: 32 },
+      { wch: 18 },
+      { wch: 8 },
+      { wch: 6 },
+      { wch: 40 },
+      { wch: 48 },
+      { wch: 40 },
+      { wch: 40 },
+    ];
+    XLSX.utils.book_append_sheet(wb, wsDetails, "Details");
+
+    const metaRows = [
+      ["Field", "Value"],
+      ["Project", state.meta.projectName ?? ""],
+      ["Mode", state.meta.mode ?? ""],
+      ["Student(s)", state.meta.student ?? ""],
+      ["GitHub link", state.meta.github ?? ""],
+      ["Validation date", state.meta.date ?? ""],
+      ["Scope", (state.meta.scope ?? []).join(", ")],
+      ["Instructor observations", state.meta.teacherNotes ?? ""],
+      ["Exported on", new Date().toLocaleString()],
+    ];
+    const wsMeta = XLSX.utils.aoa_to_sheet(metaRows);
+    wsMeta["!cols"] = [{ wch: 26 }, { wch: 60 }];
+    XLSX.utils.book_append_sheet(wb, wsMeta, "Meta");
+
+    const filename = `${baseName || "evaluation-rubric"}_${new Date().toISOString().slice(0, 10)}.xlsx`;
+    XLSX.writeFile(wb, filename);
+    return true;
+  }
+
+  function submitAndReset(state) {
+    downloadJson(state);
+    resetForm(state);
   }
 
   function bindInteractions(state) {
@@ -459,144 +580,25 @@
       }
     });
 
+    $("#btnSubmit")?.addEventListener("click", () => submitAndReset(state));
+
     $("#btnPrint")?.addEventListener("click", () => window.print());
     $("#btnPdf")?.addEventListener("click", () => window.print());
 
     $("#btnExport")?.addEventListener("click", () => {
-      const { bySection, total } = computeTotals(state);
-      const payload = {
-        exportedAt: new Date().toISOString(),
-        meta: state.meta,
-        scores: state.scores,
-        notes: state.notes,
-        totals: { bySection, total, totalOn20: toScoreOutOf20(total) },
-      };
-
-      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      const base = (state.meta.projectName || "grille-evaluation").trim().replaceAll(/\s+/g, "_");
-      a.download = `${base || "grille-evaluation"}_${new Date().toISOString().slice(0, 10)}.json`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
+      downloadJson(state);
+      resetForm(state);
     });
 
     $("#btnExcel")?.addEventListener("click", () => {
-      // SheetJS is loaded from CDN in index.html and exposes global XLSX
-      const XLSX = /** @type {any} */ (globalThis.XLSX);
-      if (!XLSX) {
-        alert("Export Excel indisponible (librairie XLSX non chargée). Vérifiez votre connexion Internet.");
-        return;
-      }
-
-      const { bySection, total } = computeTotals(state);
-      const baseName = (state.meta.projectName || "grille-evaluation")
-        .trim()
-        .replaceAll(/\s+/g, "_")
-        .slice(0, 60);
-
-      const wb = XLSX.utils.book_new();
-
-      // Feuille 1: Résumé
-      const summaryRows = [
-        ["Axe", "Note", "Max"],
-        ["Maîtrise technique", bySection.tech ?? 0, 40],
-        ["Performance & qualité", bySection.quality ?? 0, 30],
-        ["Engagement", bySection.engagement ?? 0, 20],
-        ["Usage IA", bySection.ai ?? 0, 10],
-        ["TOTAL (/100)", total, 100],
-        ["TOTAL (/20)", toScoreOutOf20(total), 20],
-      ];
-      const wsSummary = XLSX.utils.aoa_to_sheet(summaryRows);
-      wsSummary["!cols"] = [{ wch: 26 }, { wch: 10 }, { wch: 8 }];
-      XLSX.utils.book_append_sheet(wb, wsSummary, "Résumé");
-
-      // Feuille 2: Détails (critères)
-      const detailHeader = ["Axe", "Critère", "Bloom", "Note", "Max", "Description", "Indicateurs", "Preuves", "Observations"];
-      const detailRows = [detailHeader];
-      for (const section of rubric) {
-        for (const c of section.criteria) {
-          const score = clamp(Number(state.scores[c.id] ?? 0), 0, c.max);
-          const obs = String(state.notes[c.id] ?? "");
-          detailRows.push([
-            section.title,
-            c.title,
-            c.bloom,
-            score,
-            c.max,
-            c.description,
-            (c.indicators || []).join(" | "),
-            (c.evidence || []).join(" | "),
-            obs,
-          ]);
-        }
-      }
-      const wsDetails = XLSX.utils.aoa_to_sheet(detailRows);
-      wsDetails["!cols"] = [
-        { wch: 26 },
-        { wch: 32 },
-        { wch: 18 },
-        { wch: 8 },
-        { wch: 6 },
-        { wch: 40 },
-        { wch: 48 },
-        { wch: 40 },
-        { wch: 40 },
-      ];
-      XLSX.utils.book_append_sheet(wb, wsDetails, "Détails");
-
-      // Feuille 3: Meta
-      const metaRows = [
-        ["Champ", "Valeur"],
-        ["Projet", state.meta.projectName ?? ""],
-        ["Mode", state.meta.mode ?? ""],
-        ["Étudiant(e)", state.meta.student ?? ""],
-        ["Lien GitHub", state.meta.github ?? ""],
-        ["Date de validation", state.meta.date ?? ""],
-        ["Périmètre", (state.meta.scope ?? []).join(", ")],
-        ["Observations enseignant(e)", state.meta.teacherNotes ?? ""],
-        ["Exporté le", new Date().toLocaleString()],
-      ];
-      const wsMeta = XLSX.utils.aoa_to_sheet(metaRows);
-      wsMeta["!cols"] = [{ wch: 26 }, { wch: 60 }];
-      XLSX.utils.book_append_sheet(wb, wsMeta, "Meta");
-
-      const filename = `${baseName || "grille-evaluation"}_${new Date().toISOString().slice(0, 10)}.xlsx`;
-      XLSX.writeFile(wb, filename);
+      if (downloadExcel(state)) resetForm(state);
     });
 
     $("#btnReset")?.addEventListener("click", () => {
-      const ok = confirm("Réinitialiser toutes les données (notes, champs, observations) ?");
+      const ok = confirm("Reset all data (scores, fields, observations)?");
       if (!ok) return;
-      localStorage.removeItem(STORAGE_KEY);
-      location.reload();
+      resetForm(state);
     });
-  }
-
-  function hydrateMeta(state) {
-    const metaForm = $("#metaForm");
-    if (metaForm) {
-      const setVal = (name, val) => {
-        const el = $(`[name="${name}"]`, metaForm);
-        if (el && "value" in el) el.value = String(val ?? "");
-      };
-      setVal("projectName", state.meta.projectName);
-      setVal("mode", state.meta.mode);
-      setVal("student", state.meta.student);
-      setVal("github", state.meta.github);
-      setVal("date", state.meta.date);
-
-      const scopes = new Set(state.meta.scope ?? []);
-      $$('input[name="scope"]', metaForm).forEach((cb) => {
-        cb.checked = scopes.has(cb.value);
-      });
-    }
-
-    const teacherNotes = $("#teacherNotes");
-    if (teacherNotes) teacherNotes.value = state.meta.teacherNotes ?? "";
   }
 
   function main() {

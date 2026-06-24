@@ -1,19 +1,19 @@
 <!doctype html>
-<html lang="fr">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Grille d’évaluation — IA générative</title>
-    <meta name="description" content="Grille d’évaluation (100 pts) pour projets à l’ère de l’IA générative." />
+    <title>Evaluation rubric — Generative AI</title>
+    <meta name="description" content="100-point evaluation rubric for projects in the generative AI era." />
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body class="page-grille">
     <nav class="top-nav">
       <div class="container nav-inner">
-        <a class="nav-brand" href="./index.html">Évaluation IA</a>
+        <a class="nav-brand" href="./index.html">EduEval AI</a>
         <div class="nav-links">
-          <a class="nav-link is-active" href="./grille.html" aria-current="page">Grille</a>
-          <a class="nav-link nav-link-cta" href="./grille.html">Commencer l’évaluation</a>
+          <a class="nav-link" href="./index.html">Home</a>
+          <a class="nav-link is-active" href="./grille.html" aria-current="page">Rubric</a>
         </div>
       </div>
     </nav>
@@ -21,17 +21,17 @@
     <header class="site-header">
       <div class="container header-grid">
         <div>
-          <p class="kicker">Outil enseignant</p>
-          <h1>Grille d’évaluation des projets<br /><span>à l’ère de l’IA générative</span></h1>
+          <p class="kicker">Instructor tool</p>
+          <h1>Project evaluation rubric<br /><span>in the generative AI era</span></h1>
           <p class="sub">
-            Remplissez les notes par critère, ajoutez des observations, puis imprimez ou exportez.
+            Enter scores per criterion, add observations, then submit or export.
           </p>
         </div>
 
         <div class="score-card" aria-live="polite">
           <div class="score-top">
             <div>
-              <div class="label">Note finale</div>
+              <div class="label">Final score</div>
               <div class="score">
                 <span id="totalScore">0</span><span class="score-den">/ 100</span>
               </div>
@@ -40,17 +40,18 @@
               </div>
             </div>
             <div class="score-actions">
-              <button id="btnPrint" class="btn btn-ghost" type="button">Imprimer</button>
-              <button id="btnPdf" class="btn btn-ghost" type="button">Exporter (PDF)</button>
-              <button id="btnExport" class="btn btn-primary" type="button">Exporter (JSON)</button>
-              <button id="btnExcel" class="btn btn-primary" type="button">Exporter (Excel)</button>
+              <button id="btnSubmit" class="btn btn-primary" type="button">Submit</button>
+              <button id="btnPrint" class="btn btn-ghost" type="button">Print</button>
+              <button id="btnPdf" class="btn btn-ghost" type="button">Export (PDF)</button>
+              <button id="btnExport" class="btn btn-ghost" type="button">Export (JSON)</button>
+              <button id="btnExcel" class="btn btn-ghost" type="button">Export (Excel)</button>
             </div>
           </div>
           <div class="score-bottom">
             <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
               <div class="progress-bar" id="totalProgress"></div>
             </div>
-            <div class="small muted" id="autosaveStatus">Sauvegarde locale : active</div>
+            <div class="small muted" id="autosaveStatus">Local save: active</div>
           </div>
         </div>
       </div>
@@ -59,64 +60,64 @@
     <main class="container">
       <section class="card" aria-labelledby="infoTitle">
         <div class="card-head">
-          <h2 id="infoTitle">Informations projet</h2>
+          <h2 id="infoTitle">Project information</h2>
           <div class="card-actions">
-            <button id="btnReset" class="btn btn-danger" type="button">Réinitialiser</button>
+            <button id="btnReset" class="btn btn-danger" type="button">Reset</button>
           </div>
         </div>
 
         <form class="form-grid" id="metaForm" autocomplete="off">
           <label class="field">
-            <span>Projet</span>
-            <input name="projectName" type="text" placeholder="Nom du projet" />
+            <span>Project</span>
+            <input name="projectName" type="text" placeholder="Project name" />
           </label>
           <label class="field">
-            <span>Groupe / Individuel</span>
-            <input name="mode" type="text" placeholder="Individuel / Groupe / Mixte…" />
+            <span>Group / Individual</span>
+            <input name="mode" type="text" placeholder="Individual / Group / Mixed…" />
           </label>
           <label class="field">
-            <span>Étudiant(e)</span>
-            <input name="student" type="text" placeholder="Nom(s) étudiant(s)" />
+            <span>Student(s)</span>
+            <input name="student" type="text" placeholder="Student name(s)" />
           </label>
           <label class="field">
-            <span>Lien GitHub</span>
+            <span>GitHub link</span>
             <input name="github" type="url" placeholder="https://github.com/…" />
           </label>
           <label class="field">
-            <span>Date de validation</span>
+            <span>Validation date</span>
             <input name="date" type="date" />
           </label>
           <div class="callout">
-            <div class="callout-title">Périmètre d’évaluation</div>
+            <div class="callout-title">Evaluation scope</div>
             <div class="callout-body">
               <label class="check">
-                <input type="checkbox" name="scope" value="individu" />
-                <span>Individu seul</span>
+                <input type="checkbox" name="scope" value="individual" />
+                <span>Individual only</span>
               </label>
               <label class="check">
-                <input type="checkbox" name="scope" value="groupe" />
-                <span>Groupe (note collective)</span>
+                <input type="checkbox" name="scope" value="group" />
+                <span>Group (collective grade)</span>
               </label>
               <label class="check">
-                <input type="checkbox" name="scope" value="mixte" />
-                <span>Mixte</span>
+                <input type="checkbox" name="scope" value="mixed" />
+                <span>Mixed</span>
               </label>
             </div>
           </div>
         </form>
       </section>
 
-      <section class="rubric" aria-label="Grille d’évaluation">
+      <section class="rubric" aria-label="Evaluation rubric">
         <div id="rubricMount"></div>
       </section>
 
       <section class="card" aria-labelledby="iaScaleTitle">
         <div class="card-head">
-          <h2 id="iaScaleTitle">Échelle de l’usage de l’IA — référence évaluateur</h2>
+          <h2 id="iaScaleTitle">AI usage scale — evaluator reference</h2>
         </div>
 
         <p class="small muted">
-          Tableau indicatif. Chaque niveau doit être étayé par des comportements observables et des preuves traçables.
+          Indicative table. Each level must be supported by observable behaviors and traceable evidence.
         </p>
 
         <div class="ia-scale" id="iaScaleMount"></div>
@@ -124,7 +125,7 @@
 
       <section class="card" aria-labelledby="finalObsTitle">
         <div class="card-head">
-          <h2 id="finalObsTitle">Observations de l’enseignant(e)</h2>
+          <h2 id="finalObsTitle">Instructor observations</h2>
         </div>
         <label class="field">
           <span>Observations</span>
@@ -134,8 +135,8 @@
 
       <footer class="site-footer">
         <div class="small muted">
-          <a href="./index.html">← Retour à l’accueil</a>
-          — Références :
+          <a href="./index.html">← Back to home</a>
+          — References:
           <a href="https://aiassessmentscale.com/" target="_blank" rel="noreferrer">aiassessmentscale.com</a>
           — <a href="https://open-publishing.org/journals/index.php/jutlp/article/view/810" target="_blank" rel="noreferrer">JUTLP (article)</a>
         </div>
