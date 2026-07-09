@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="en">
+<html lang="fr">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Evaluation rubric — Generative AI</title>
-    <meta name="description" content="100-point evaluation rubric for projects in the generative AI era." />
+    <title>Grille pondérée — EduEval AI</title>
+    <meta name="description" content="Grille d'évaluation sur 100 points pour les projets à l'ère de l'IA générative." />
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body class="page-grille">
@@ -12,8 +12,9 @@
       <div class="container nav-inner">
         <a class="nav-brand" href="./index.html">EduEval AI</a>
         <div class="nav-links">
-          <a class="nav-link" href="./index.html">Home</a>
-          <a class="nav-link is-active" href="./grille.html" aria-current="page">Rubric</a>
+          <a class="nav-link" href="./index.html">Accueil</a>
+          <a class="nav-link is-active" href="./grille.html" aria-current="page">Grille pondérée</a>
+          <a class="nav-link" href="./grille-competences.html">Grille par compétences</a>
         </div>
       </div>
     </nav>
@@ -21,17 +22,17 @@
     <header class="site-header">
       <div class="container header-grid">
         <div>
-          <p class="kicker">Instructor tool</p>
-          <h1>Project evaluation rubric<br /><span>in the generative AI era</span></h1>
+          <p class="kicker">Outil enseignant</p>
+          <h1>Grille d'évaluation<br /><span>à l'ère de l'IA générative</span></h1>
           <p class="sub">
-            Enter scores per criterion, add observations, then submit or export.
+            Saisissez les scores par critère, ajoutez vos observations, puis soumettez ou exportez.
           </p>
         </div>
 
         <div class="score-card" aria-live="polite">
           <div class="score-top">
             <div>
-              <div class="label">Final score</div>
+              <div class="label">Score final</div>
               <div class="score">
                 <span id="totalScore">0</span><span class="score-den">/ 100</span>
               </div>
@@ -40,9 +41,7 @@
               </div>
             </div>
             <div class="score-actions">
-              <button id="btnSubmit" class="btn btn-primary" type="button">Submit</button>
-              <button id="btnPrint" class="btn btn-ghost" type="button">Print</button>
-              <button id="btnPdf" class="btn btn-ghost" type="button">Export (PDF)</button>
+             <button id="btnPdf" class="btn btn-ghost" type="button">Export (PDF)</button>
               <button id="btnExport" class="btn btn-ghost" type="button">Export (JSON)</button>
               <button id="btnExcel" class="btn btn-ghost" type="button">Export (Excel)</button>
             </div>
@@ -51,7 +50,7 @@
             <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
               <div class="progress-bar" id="totalProgress"></div>
             </div>
-            <div class="small muted" id="autosaveStatus">Local save: active</div>
+            <div class="small muted" id="autosaveStatus">Sauvegarde locale : active</div>
           </div>
         </div>
       </div>
@@ -60,64 +59,64 @@
     <main class="container">
       <section class="card" aria-labelledby="infoTitle">
         <div class="card-head">
-          <h2 id="infoTitle">Project information</h2>
+          <h2 id="infoTitle">Informations du projet</h2>
           <div class="card-actions">
-            <button id="btnReset" class="btn btn-danger" type="button">Reset</button>
+            <button id="btnReset" class="btn btn-danger" type="button">Réinitialiser</button>
           </div>
         </div>
 
         <form class="form-grid" id="metaForm" autocomplete="off">
           <label class="field">
-            <span>Project</span>
-            <input name="projectName" type="text" placeholder="Project name" />
+            <span>Projet</span>
+            <input name="projectName" type="text" placeholder="Nom du projet" />
           </label>
           <label class="field">
-            <span>Group / Individual</span>
-            <input name="mode" type="text" placeholder="Individual / Group / Mixed…" />
+            <span>Groupe / Individuel</span>
+            <input name="mode" type="text" placeholder="Individuel / Groupe / Mixte…" />
           </label>
           <label class="field">
-            <span>Student(s)</span>
-            <input name="student" type="text" placeholder="Student name(s)" />
+            <span>Étudiant·e(s)</span>
+            <input name="student" type="text" placeholder="Nom(s) de l'étudiant·e ou du groupe" />
           </label>
           <label class="field">
-            <span>GitHub link</span>
+            <span>Lien GitHub</span>
             <input name="github" type="url" placeholder="https://github.com/…" />
           </label>
           <label class="field">
-            <span>Validation date</span>
+            <span>Date de validation</span>
             <input name="date" type="date" />
           </label>
           <div class="callout">
-            <div class="callout-title">Evaluation scope</div>
+            <div class="callout-title">Périmètre d'évaluation</div>
             <div class="callout-body">
               <label class="check">
                 <input type="checkbox" name="scope" value="individual" />
-                <span>Individual only</span>
+                <span>Individuel uniquement</span>
               </label>
               <label class="check">
                 <input type="checkbox" name="scope" value="group" />
-                <span>Group (collective grade)</span>
+                <span>Groupe (note collective)</span>
               </label>
               <label class="check">
                 <input type="checkbox" name="scope" value="mixed" />
-                <span>Mixed</span>
+                <span>Mixte</span>
               </label>
             </div>
           </div>
         </form>
       </section>
 
-      <section class="rubric" aria-label="Evaluation rubric">
+      <section class="rubric" aria-label="Grille d'évaluation">
         <div id="rubricMount"></div>
       </section>
 
       <section class="card" aria-labelledby="iaScaleTitle">
         <div class="card-head">
-          <h2 id="iaScaleTitle">AI usage scale — evaluator reference</h2>
+          <h2 id="iaScaleTitle">Échelle d'usage de l'IA — référence évaluateur·rice</h2>
         </div>
 
         <p class="small muted">
-          Indicative table. Each level must be supported by observable behaviors and traceable evidence.
+          Table indicative. Chaque niveau doit être étayé par des comportements observables et des preuves traçables.
         </p>
 
         <div class="ia-scale" id="iaScaleMount"></div>
@@ -125,18 +124,19 @@
 
       <section class="card" aria-labelledby="finalObsTitle">
         <div class="card-head">
-          <h2 id="finalObsTitle">Instructor observations</h2>
+          <h2 id="finalObsTitle">Observations de l'enseignant·e</h2>
         </div>
         <label class="field">
-          <span>Observations</span>
-          <textarea name="teacherNotes" id="teacherNotes" rows="5" placeholder="Observations…"></textarea>
+          <span>Observations générales</span>
+          <textarea name="teacherNotes" id="teacherNotes" rows="5" placeholder="Observations, synthèse de soutenance…"></textarea>
         </label>
       </section>
 
       <footer class="site-footer">
         <div class="small muted">
-          <a href="./index.html">← Back to home</a>
-          — References:
+          <a href="./index.html">← Retour à l'accueil</a>
+          — Voir aussi : <a href="./grille-competences.html">grille par compétences (A–D)</a>
+          — Références :
           <a href="https://aiassessmentscale.com/" target="_blank" rel="noreferrer">aiassessmentscale.com</a>
           — <a href="https://open-publishing.org/journals/index.php/jutlp/article/view/810" target="_blank" rel="noreferrer">JUTLP (article)</a>
         </div>

@@ -1,12 +1,12 @@
 <!doctype html>
-<html lang="en">
+<html lang="fr">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>EduEval AI</title>
     <meta
       name="description"
-      content="Pedagogical evaluation rubric for student projects: technical skills, quality, engagement, and responsible AI use."
+      content="Grille d'évaluation pédagogique pour les projets étudiants : compétences techniques, qualité, engagement et usage responsable de l'IA."
     />
     <link rel="stylesheet" href="./styles.css" />
   </head>
@@ -15,8 +15,9 @@
       <div class="container nav-inner">
         <a class="nav-brand" href="./index.html">EduEval AI</a>
         <div class="nav-links">
-          <a class="nav-link is-active" href="./index.html" aria-current="page">Home</a>
-          <a class="nav-link nav-link-cta" href="./grille.html">Start evaluation</a>
+          <a class="nav-link is-active" href="./index.html" aria-current="page">Accueil</a>
+          <a class="nav-link" href="./grille.html">Grille pondérée</a>
+          <a class="nav-link" href="./grille-competences.html">Grille par compétences</a>
         </div>
       </div>
     </nav>
@@ -25,21 +26,21 @@
       <div class="container hero-grid">
         <div class="hero-copy">
           <h1 class="hero-title">
-            Evaluate projects<br />
-            <span>in the generative AI era</span>
+            Évaluer les projets<br />
+            <span>à l'ère de l'IA générative</span>
           </h1>
           <p class="hero-lead">
-            A structured 100-point rubric to assess technical mastery, project quality,
-            student engagement, and thoughtful use of artificial intelligence.
+            Deux grilles complémentaires pour évaluer la maîtrise technique, la qualité du projet,
+            l'engagement des étudiant·es et un usage réfléchi de l'intelligence artificielle.
           </p>
           <div class="hero-actions">
-            <a class="btn btn-primary btn-lg" href="./grille.html">Open evaluation rubric</a>
-            <a class="btn btn-ghost btn-lg" href="#axes">Explore the framework</a>
+            <a class="btn btn-primary btn-lg" href="./grille.html">Grille pondérée (100 pts)</a>
+            <a class="btn btn-ghost btn-lg" href="./grille-competences.html">Grille par compétences (A–D)</a>
           </div>
           <div class="hero-badges">
             <span class="hero-badge">100 points</span>
-            <span class="hero-badge">≈ /20 auto</span>
-            <span class="hero-badge">AI scale N1–N5</span>
+            <span class="hero-badge">Niveaux A–D</span>
+            <span class="hero-badge">Échelle IA N1–N5</span>
             <span class="hero-badge">Export PDF · Excel · JSON</span>
           </div>
         </div>
@@ -47,22 +48,22 @@
         <div class="hero-visual" aria-hidden="true">
           <div class="score-preview">
             <div class="score-preview-head">
-              <span class="label">Score preview</span>
-              <span class="score-preview-tag">Live</span>
+              <span class="label">Aperçu du score</span>
+              <span class="score-preview-tag">En direct</span>
             </div>
             <div class="score-preview-main">
               <span class="score-preview-value">82</span>
               <span class="score-preview-den">/ 100</span>
             </div>
-            <div class="score-preview-sub">≈ 16.4 / 20</div>
+            <div class="score-preview-sub">≈ 16,4 / 20</div>
             <div class="score-preview-bars">
               <div class="score-preview-row">
-                <span>Technical</span>
+                <span>Technique</span>
                 <div class="mini-bar"><i style="width: 85%"></i></div>
                 <strong>34/40</strong>
               </div>
               <div class="score-preview-row">
-                <span>Quality</span>
+                <span>Qualité</span>
                 <div class="mini-bar"><i style="width: 77%"></i></div>
                 <strong>23/30</strong>
               </div>
@@ -72,7 +73,7 @@
                 <strong>16/20</strong>
               </div>
               <div class="score-preview-row">
-                <span>AI usage</span>
+                <span>Usage IA</span>
                 <div class="mini-bar"><i style="width: 90%"></i></div>
                 <strong>9/10</strong>
               </div>
@@ -86,42 +87,64 @@
       <section class="home-section" id="context">
         <div class="container">
           <div class="section-intro">
-            <p class="kicker">Why this tool?</p>
-            <h2>Evaluate differently, without ignoring AI</h2>
+            <p class="kicker">Pourquoi cet outil ?</p>
+            <h2>Évaluer autrement, sans ignorer l'IA</h2>
             <p class="section-lead">
-              Generative AI is changing how students design, code, and write.
-              This rubric helps instructors stay rigorous about real skills while
-              acknowledging — and questioning — the use of AI tools.
+              L'IA générative transforme la façon dont les étudiant·es conçoivent, codent et rédigent.
+              Ces grilles aident les enseignant·es à rester exigeant·es sur les compétences réelles tout en
+              reconnaissant — et en questionnant — l'usage des outils d'IA.
             </p>
           </div>
 
           <div class="feature-grid">
             <article class="feature-card">
               <div class="feature-icon">01</div>
-              <h3>Explicit criteria</h3>
-              <p>Each axis breaks down into observable indicators, expected evidence, and Bloom levels.</p>
+              <h3>Critères explicites</h3>
+              <p>Chaque axe se décline en indicateurs observables, preuves attendues et niveaux Bloom.</p>
             </article>
             <article class="feature-card">
               <div class="feature-icon">02</div>
-              <h3>Traceable AI use</h3>
-              <p>The N1–N5 scale distinguishes no AI from creative exploration, backed by concrete evidence.</p>
+              <h3>Usage de l'IA traçable</h3>
+              <p>L'échelle N1–N5 distingue l'absence d'IA de l'exploration créative, étayée par des preuves concrètes.</p>
             </article>
             <article class="feature-card">
               <div class="feature-icon">03</div>
-              <h3>Defense-ready</h3>
-              <p>Scores, per-criterion notes, and instructor summary — all centralized and exportable.</p>
+              <h3>Deux modes d'évaluation</h3>
+              <p>Grille chiffrée sur 100 pts ou grille qualitative par niveaux A–D, avec conversion optionnelle.</p>
             </article>
           </div>
         </div>
       </section>
 
-      <section class="home-section home-section-alt" id="axes">
+      <section class="home-section home-section-alt" id="modes">
         <div class="container">
           <div class="section-intro">
-            <p class="kicker">Rubric structure</p>
-            <h2>Four axes, one hundred points</h2>
+            <p class="kicker">Deux grilles complémentaires</p>
+            <h2>Choisir l'approche adaptée à votre contexte</h2>
+          </div>
+
+          <div class="feature-grid">
+            <article class="feature-card">
+              <h3>Grille pondérée (100 pts)</h3>
+              <p>Saisie de scores par critère, calcul automatique du total et conversion /20. Idéale pour le bulletin et le suivi chiffré.</p>
+              <a class="btn btn-primary" href="./grille.html" style="margin-top:12px;">Ouvrir la grille pondérée</a>
+            </article>
+            <article class="feature-card">
+              <h3>Grille par compétences (A–D)</h3>
+              <p>Évaluation critériée par niveaux de maîtrise observables. Le score chiffré reste une conversion optionnelle.</p>
+              <a class="btn btn-ghost" href="./grille-competences.html" style="margin-top:12px;">Ouvrir la grille par compétences</a>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="home-section" id="axes">
+        <div class="container">
+          <div class="section-intro">
+            <p class="kicker">Structure de la grille</p>
+            <h2>Quatre axes, cent points</h2>
             <p class="section-lead">
-              The final score is calculated automatically. An approximate /20 conversion is shown in real time.
+              Le score final est calculé automatiquement dans la grille pondérée. Une conversion approximative /20 est affichée en temps réel.
             </p>
           </div>
 
@@ -129,64 +152,64 @@
             <article class="axis-card axis-tech">
               <div class="axis-top">
                 <span class="axis-num">40 pts</span>
-                <h3>Technical mastery</h3>
+                <h3>Maîtrise technique</h3>
               </div>
               <ul>
-                <li>Expected features (30 pts)</li>
-                <li>Understanding &amp; architecture (10 pts)</li>
+                <li>Fonctionnalités attendues (30 pts)</li>
+                <li>Compréhension &amp; architecture (10 pts)</li>
               </ul>
-              <p class="axis-bloom">Bloom: Apply → Analyze</p>
+              <p class="axis-bloom">Bloom : Appliquer → Analyser</p>
             </article>
 
             <article class="axis-card axis-quality">
               <div class="axis-top">
                 <span class="axis-num">30 pts</span>
-                <h3>Performance &amp; quality</h3>
+                <h3>Performance &amp; qualité</h3>
               </div>
               <ul>
-                <li>Code quality and stability (15 pts)</li>
-                <li>User experience UX/UI (15 pts)</li>
+                <li>Qualité du code et stabilité (15 pts)</li>
+                <li>Expérience utilisateur UX/UI (15 pts)</li>
               </ul>
-              <p class="axis-bloom">Bloom: Analyze → Create</p>
+              <p class="axis-bloom">Bloom : Analyser → Créer</p>
             </article>
 
             <article class="axis-card axis-engagement">
               <div class="axis-top">
                 <span class="axis-num">20 pts</span>
-                <h3>Engagement &amp; workflow</h3>
+                <h3>Engagement &amp; processus</h3>
               </div>
               <ul>
-                <li>Git / GitHub collaboration (8 pts)</li>
-                <li>Autonomy &amp; initiative (6 pts)</li>
-                <li>Organization &amp; planning (6 pts)</li>
+                <li>Collaboration Git / GitHub (8 pts)</li>
+                <li>Autonomie &amp; initiative (6 pts)</li>
+                <li>Organisation &amp; planification (6 pts)</li>
               </ul>
-              <p class="axis-bloom">Bloom: Apply → Evaluate</p>
+              <p class="axis-bloom">Bloom : Appliquer → Évaluer</p>
             </article>
 
             <article class="axis-card axis-ai">
               <div class="axis-top">
                 <span class="axis-num">10 pts</span>
-                <h3>Generative AI usage</h3>
+                <h3>Usage de l'IA générative</h3>
               </div>
               <ul>
-                <li>Consistent usage level (4 pts)</li>
-                <li>Justification of AI use (3 pts)</li>
-                <li>Critical thinking toward AI (3 pts)</li>
+                <li>Cohérence du niveau d'usage (4 pts)</li>
+                <li>Justification de l'usage de l'IA (3 pts)</li>
+                <li>Esprit critique face à l'IA (3 pts)</li>
               </ul>
-              <p class="axis-bloom">Bloom: Understand → Evaluate</p>
+              <p class="axis-bloom">Bloom : Comprendre → Évaluer</p>
             </article>
           </div>
         </div>
       </section>
 
-      <section class="home-section" id="scale">
+      <section class="home-section home-section-alt" id="scale">
         <div class="container">
           <div class="section-intro">
-            <p class="kicker">Evaluator reference</p>
-            <h2>AI usage scale (N1 → N5)</h2>
+            <p class="kicker">Référence évaluateur·rice</p>
+            <h2>Échelle d'usage de l'IA (N1 → N5)</h2>
             <p class="section-lead">
-              Inspired by the AI Assessment Scale, each level must be supported by observable
-              behaviors — not just a student declaration.
+              Inspirée de l'AI Assessment Scale, chaque niveau doit être étayé par des comportements
+              observables — pas seulement par une déclaration de l'étudiant·e.
             </p>
           </div>
 
@@ -194,76 +217,76 @@
             <article class="ia-step ia-step-n1">
               <span class="ia-step-level">N1</span>
               <div>
-                <h3>No AI</h3>
-                <p>Work based on documentation, human resources, and personal reflection.</p>
+                <h3>Sans IA</h3>
+                <p>Travail basé sur la documentation, les ressources humaines et la réflexion personnelle.</p>
               </div>
             </article>
             <article class="ia-step ia-step-n2">
               <span class="ia-step-level">N2</span>
               <div>
-                <h3>Preparation with AI</h3>
-                <p>Ideation, research, brainstorming — then rewritten in the student's own words.</p>
+                <h3>Préparation avec IA</h3>
+                <p>Idéation, recherche, brainstorming — puis réécriture avec ses propres mots.</p>
               </div>
             </article>
             <article class="ia-step ia-step-n3">
               <span class="ia-step-level">N3</span>
               <div>
-                <h3>Collaboration with AI</h3>
-                <p>Assistant for code or text, with systematic review and corrections.</p>
+                <h3>Collaboration avec IA</h3>
+                <p>Assistant pour le code ou le texte, avec relecture et corrections systématiques.</p>
               </div>
             </article>
             <article class="ia-step ia-step-n4">
               <span class="ia-step-level">N4</span>
               <div>
-                <h3>Full integration</h3>
-                <p>AI orchestrated at every stage, with model choices and limit assessment.</p>
+                <h3>Intégration complète</h3>
+                <p>IA orchestrée à chaque étape, avec choix de modèles et évaluation des limites.</p>
               </div>
             </article>
             <article class="ia-step ia-step-n5">
               <span class="ia-step-level">N5</span>
               <div>
-                <h3>Creative exploration</h3>
-                <p>Innovative, reflective use with bias questioning and documented experiments.</p>
+                <h3>Exploration créative</h3>
+                <p>Usage innovant et réflexif, avec questionnement des biais et expérimentations documentées.</p>
               </div>
             </article>
           </div>
         </div>
       </section>
 
-      <section class="home-section home-section-alt" id="usage">
+      <section class="home-section" id="usage">
         <div class="container">
           <div class="section-intro">
-            <p class="kicker">How to use</p>
-            <h2>From defense to grade report</h2>
+            <p class="kicker">Mode d'emploi</p>
+            <h2>De la soutenance au bulletin</h2>
           </div>
 
           <ol class="steps-list">
             <li>
               <span class="step-num">1</span>
               <div>
-                <h3>Fill in project info</h3>
-                <p>Name, student(s), GitHub link, individual or group scope.</p>
+                <h3>Renseigner les informations du projet</h3>
+                <p>Nom, étudiant·e(s), lien GitHub, périmètre individuel ou collectif.</p>
               </div>
             </li>
             <li>
               <span class="step-num">2</span>
               <div>
-                <h3>Score criterion by criterion</h3>
-                <p>Assign a score for each indicator and document your observations.</p>
+                <h3>Évaluer critère par critère</h3>
+                <p>Attribuer un score (grille pondérée) ou un niveau A–D (grille compétences) et documenter vos observations.</p>
               </div>
             </li>
             <li>
               <span class="step-num">3</span>
               <div>
-                <h3>Cross-check AI usage</h3>
-                <p>Verify consistency between declared level, evidence, and oral defense.</p>
+                <h3>Vérifier l'usage de l'IA</h3>
+                <p>Contrôler la cohérence entre le niveau déclaré, les preuves et la soutenance orale.</p>
               </div>
             </li>
             <li>
               <span class="step-num">4</span>
               <div>
-                <h3>Submit &amp; export</h3>
-                <p>Export PDF, Excel, or JSON — the form resets automatically after each submit.</p>
+                <h3>Soumettre &amp; exporter</h3>
+                <p>Export PDF, Excel ou JSON — le formulaire se réinitialise après chaque soumission.</p>
               </div>
             </li>
           </ol>
@@ -273,13 +296,16 @@
       <section class="home-cta">
         <div class="container cta-inner">
           <div>
-            <p class="kicker">Ready to evaluate?</p>
-            <h2>Start an evaluation in minutes</h2>
+            <p class="kicker">Prêt·e à évaluer ?</p>
+            <h2>Lancez une évaluation en quelques minutes</h2>
             <p class="section-lead">
-              The rubric auto-saves in your browser. Resume an evaluation at any time.
+              Les grilles s'enregistrent automatiquement dans votre navigateur. Reprenez une évaluation à tout moment.
             </p>
           </div>
-          <a class="btn btn-primary btn-lg" href="./grille.html">Go to rubric</a>
+          <div style="display:flex;flex-wrap:wrap;gap:10px;">
+            <a class="btn btn-primary btn-lg" href="./grille.html">Grille pondérée</a>
+            <a class="btn btn-ghost btn-lg" href="./grille-competences.html" style="color:#fff;border-color:rgba(255,255,255,.4);">Grille par compétences</a>
+          </div>
         </div>
       </section>
     </main>
@@ -288,10 +314,11 @@
       <div class="container home-footer-inner">
         <div>
           <strong>EduEval AI</strong>
-          <p class="small muted">The Project Evaluation Framework for the AI Era</p>
+          <p class="small muted">Cadre d'évaluation de projet à l'ère de l'IA</p>
         </div>
         <div class="home-footer-links">
-          <a href="./grille.html">Evaluation rubric</a>
+          <a href="./grille.html">Grille pondérée</a>
+          <a href="./grille-competences.html">Grille par compétences</a>
           <a href="https://aiassessmentscale.com/" target="_blank" rel="noreferrer">AI Assessment Scale</a>
           <a href="https://open-publishing.org/journals/index.php/jutlp/article/view/810" target="_blank" rel="noreferrer">JUTLP</a>
         </div>
