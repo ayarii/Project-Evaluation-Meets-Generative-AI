@@ -1,0 +1,26 @@
+{
+  "id": "eduval-generic",
+  "title": "Grille générique EduEval AI",
+  "version": "v2",
+  "draft": true,
+  "axes": [
+    {
+      "id": "tech",
+      "title": "Maîtrise technique",
+      "max": 40,
+      "criteria": [
+        { "id": "tech_func", "title": "Fonctionnalités attendues", "max": 30, "draft": true },
+        { "id": "tech_understand", "title": "Compréhension technique", "max": 10, "draft": true }
+      ]
+    },
+    {
+      "id": "quality",
+      "title": "Performance & qualité",
+      "max": 30,
+      "criteria": [
+        { "id": "quality_code", "title": "Qualité globale du code", "max": 15, "draft": true },
+        { "id": "quality_ux", "title": "Expérience utilisateur", "max": 15, "draft": true }
+      ]
+    }
+  ]
+}
