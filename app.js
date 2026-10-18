@@ -6,20 +6,20 @@ const LEGACY_STORAGE_KEY = "edueval-ai-rubric:v1";
 const rubric = [
   {
     id: "tech",
-    title: "1. Maîtrise technique",
+    title: "1. MaÃ®trise technique",
     max: 40,
     criteria: [
-      { id: "tech_func", title: "Fonctionnalités attendues", max: 30, bloom: "Appliquer", description: "Implémentation correcte et complète des fonctionnalités requises.", indicators: ["Toutes les fonctionnalités du cahier des charges sont présentes, testables et fonctionnelles sans erreur critique."], evidence: ["Historique Git", "Démonstration", "Tests exécutés/réussis"] },
-      { id: "tech_understand", title: "Compréhension technique", max: 10, bloom: "Comprendre ? Analyser", description: "Capacité à expliquer le fonctionnement du projet et ses choix techniques.", indicators: ["Réponses précises aux questions de l'enseignant·e."], evidence: ["Soutenance orale courte", "Schéma d'architecture"] },
+      { id: "tech_func", title: "FonctionnalitÃ©s attendues", max: 30, bloom: "Appliquer", description: "ImplÃ©mentation correcte et complÃ¨te des fonctionnalitÃ©s requises.", indicators: ["Toutes les fonctionnalitÃ©s du cahier des charges sont prÃ©sentes, testables et fonctionnelles sans erreur critique."], evidence: ["Historique Git", "DÃ©monstration", "Tests exÃ©cutÃ©s/rÃ©ussis"] },
+      { id: "tech_understand", title: "ComprÃ©hension technique", max: 10, bloom: "Comprendre ? Analyser", description: "CapacitÃ© Ã  expliquer le fonctionnement du projet et ses choix techniques.", indicators: ["RÃ©ponses prÃ©cises aux questions de l'enseignantÂ·e."], evidence: ["Soutenance orale courte", "SchÃ©ma d'architecture"] },
     ],
   },
   {
     id: "quality",
-    title: "2. Performance & qualité",
+    title: "2. Performance & qualitÃ©",
     max: 30,
     criteria: [
-      { id: "quality_code", title: "Qualité globale du code", max: 15, bloom: "Analyser", description: "Stabilité, lisibilité, maintenabilité et absence de bugs majeurs.", indicators: ["Code structuré et commenté."], evidence: ["Revue de code", "README", "Aucune erreur critique"] },
-      { id: "quality_ux", title: "Expérience utilisateur", max: 15, bloom: "Analyser ? Créer", description: "Navigation claire et ergonomie de l'interface.", indicators: ["Cas d'erreur gérés."], evidence: ["Capture annotée", "Retour de pairs"] },
+      { id: "quality_code", title: "QualitÃ© globale du code", max: 15, bloom: "Analyser", description: "StabilitÃ©, lisibilitÃ©, maintenabilitÃ© et absence de bugs majeurs.", indicators: ["Code structurÃ© et commentÃ©."], evidence: ["Revue de code", "README", "Aucune erreur critique"] },
+      { id: "quality_ux", title: "ExpÃ©rience utilisateur", max: 15, bloom: "Analyser ? CrÃ©er", description: "Navigation claire et ergonomie de l'interface.", indicators: ["Cas d'erreur gÃ©rÃ©s."], evidence: ["Capture annotÃ©e", "Retour de pairs"] },
     ],
   },
   {
@@ -27,19 +27,19 @@ const rubric = [
     title: "3. Engagement & processus",
     max: 20,
     criteria: [
-      { id: "eng_collab", title: "Outils collaboratifs", max: 8, bloom: "Appliquer ? Évaluer", description: "Progression traçable et collaboration visible.", indicators: ["Historique Git public."], evidence: ["Historique Git", "GitHub Projects"] },
-      { id: "eng_autonomy", title: "Autonomie & initiative", max: 6, bloom: "Créer", description: "Recherche autonome et résolution de problèmes sans aide constante.", indicators: ["Fonctionnalités bonus."], evidence: ["Journal de bord", "Entretien oral"] },
-      { id: "eng_plan", title: "Organisation & planification", max: 6, bloom: "Évaluer", description: "Structuration des tâches et gestion du temps.", indicators: ["Plan initial suivi."], evidence: ["Jalons respectés", "Journal de bord"] },
+      { id: "eng_collab", title: "Outils collaboratifs", max: 8, bloom: "Appliquer ? Ã‰valuer", description: "Progression traÃ§able et collaboration visible.", indicators: ["Historique Git public."], evidence: ["Historique Git", "GitHub Projects"] },
+      { id: "eng_autonomy", title: "Autonomie & initiative", max: 6, bloom: "CrÃ©er", description: "Recherche autonome et rÃ©solution de problÃ¨mes sans aide constante.", indicators: ["FonctionnalitÃ©s bonus."], evidence: ["Journal de bord", "Entretien oral"] },
+      { id: "eng_plan", title: "Organisation & planification", max: 6, bloom: "Ã‰valuer", description: "Structuration des tÃ¢ches et gestion du temps.", indicators: ["Plan initial suivi."], evidence: ["Jalons respectÃ©s", "Journal de bord"] },
     ],
   },
   {
     id: "ai",
-    title: "4. Usage de l'IA générative",
+    title: "4. Usage de l'IA gÃ©nÃ©rative",
     max: 10,
     criteria: [
-      { id: "ai_level", title: "Niveau d'usage de l'IA", max: 4, bloom: "Analyser", description: "Cohérence entre le niveau déclaré, l'usage observé et les livrables.", indicators: ["Niveau déclaré étayé par des preuves."], evidence: ["Captures", "Journaux de prompts", "Entretien oral"] },
-      { id: "ai_justify", title: "Justification de l'usage de l'IA", max: 3, bloom: "Comprendre ? Analyser", description: "Explication du pourquoi, du quand et du comment.", indicators: ["Exemples précis."], evidence: ["Journal de bord", "README"] },
-      { id: "ai_critical", title: "Esprit critique face à l'IA", max: 3, bloom: "Évaluer", description: "Vérification et correction des sorties d'IA.", indicators: ["Correction ou rejet documenté."], evidence: ["Capture avant/après", "Soutenance"] },
+      { id: "ai_level", title: "Niveau d'usage de l'IA", max: 4, bloom: "Analyser", description: "CohÃ©rence entre le niveau dÃ©clarÃ©, l'usage observÃ© et les livrables.", indicators: ["Niveau dÃ©clarÃ© Ã©tayÃ© par des preuves."], evidence: ["Captures", "Journaux de prompts", "Entretien oral"] },
+      { id: "ai_justify", title: "Justification de l'usage de l'IA", max: 3, bloom: "Comprendre ? Analyser", description: "Explication du pourquoi, du quand et du comment.", indicators: ["Exemples prÃ©cis."], evidence: ["Journal de bord", "README"] },
+      { id: "ai_critical", title: "Esprit critique face Ã  l'IA", max: 3, bloom: "Ã‰valuer", description: "VÃ©rification et correction des sorties d'IA.", indicators: ["Correction ou rejet documentÃ©."], evidence: ["Capture avant/aprÃ¨s", "Soutenance"] },
     ],
   },
 ];
@@ -97,7 +97,7 @@ function loadState() {
 function saveState(state) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   const status = document.querySelector("#autosaveStatus");
-  if (status) status.textContent = `Enregistré à ${new Date().toLocaleTimeString("fr-FR")}`;
+  if (status) status.textContent = `EnregistrÃ© Ã  ${new Date().toLocaleTimeString("fr-FR")}`;
 }
 
 function sanitizeText(value) {
@@ -161,7 +161,7 @@ function renderRubric(mount, state) {
             <div class="proof-main">
               <span>${escapeHtml(item)}</span>
               <select data-proof-status="${criterion.id}" data-proof-index="${index}" aria-label="Statut de la preuve ${escapeHtml(item)}">
-                <option value="unchecked" ${proof.status === "unchecked" ? "selected" : ""}>À vérifier</option>
+                <option value="unchecked" ${proof.status === "unchecked" ? "selected" : ""}>Ã€ vÃ©rifier</option>
                 <option value="seen" ${proof.status === "seen" ? "selected" : ""}>Vue</option>
                 <option value="absent" ${proof.status === "absent" ? "selected" : ""}>Absente</option>
               </select>
@@ -197,13 +197,13 @@ function renderRubric(mount, state) {
             <div class="score-input">
               <div>
                 <div class="label2">Score</div>
-                <div class="small muted">0 à ${criterion.max}</div>
+                <div class="small muted">0 Ã  ${criterion.max}</div>
               </div>
               <input type="number" inputmode="numeric" min="0" max="${criterion.max}" step="0.5" value="${score === "" ? "" : Number(score)}" data-score-input="${criterion.id}" aria-label="Score pour ${escapeHtml(criterion.title)}" />
             </div>
             <label class="field">
-              <span>Observations (critère)</span>
-              <textarea rows="3" data-note-input="${criterion.id}" placeholder="Notes / justifications…">${escapeHtml(note)}</textarea>
+              <span>Observations (critÃ¨re)</span>
+              <textarea rows="3" data-note-input="${criterion.id}" placeholder="Notes / justificationsâ€¦">${escapeHtml(note)}</textarea>
             </label>
           </div>
         </div>
@@ -216,17 +216,17 @@ function renderRubric(mount, state) {
 
 function renderIaScale(mount) {
   const rows = [
-    ["N1", "Sans IA", "Aucun outil d'IA utilisé.", "Déclaration écrite + aucune mention d'IA dans le journal de bord."],
-    ["N2", "Préparation avec IA", "IA utilisée pour l'idéation et la recherche.", "Captures de prompts de recherche ; pré-rédaction."],
-    ["N3", "Collaboration avec IA", "IA comme assistant pour le code ou le texte.", "Journal des échanges IA ; corrections apportées."],
-    ["N4", "Intégration complète", "IA intégrée à chaque étape.", "Pipeline détaillé ; exemples de rejet/correction de réponses IA."],
-    ["N5", "Exploration créative", "IA utilisée de façon innovante et réflexive.", "Rapport réflexif ; expérimentations documentées."],
+    ["N1", "Sans IA", "Aucun outil d'IA utilisÃ©.", "DÃ©claration Ã©crite + aucune mention d'IA dans le journal de bord."],
+    ["N2", "PrÃ©paration avec IA", "IA utilisÃ©e pour l'idÃ©ation et la recherche.", "Captures de prompts de recherche ; prÃ©-rÃ©daction."],
+    ["N3", "Collaboration avec IA", "IA comme assistant pour le code ou le texte.", "Journal des Ã©changes IA ; corrections apportÃ©es."],
+    ["N4", "IntÃ©gration complÃ¨te", "IA intÃ©grÃ©e Ã  chaque Ã©tape.", "Pipeline dÃ©taillÃ© ; exemples de rejet/correction de rÃ©ponses IA."],
+    ["N5", "Exploration crÃ©ative", "IA utilisÃ©e de faÃ§on innovante et rÃ©flexive.", "Rapport rÃ©flexif ; expÃ©rimentations documentÃ©es."],
   ];
 
   mount.innerHTML = `
-    <div class="ia-table-wrap" role="region" aria-label="Table indicative de l'échelle d'usage de l'IA">
+    <div class="ia-table-wrap" role="region" aria-label="Table indicative de l'Ã©chelle d'usage de l'IA">
       <table class="ia-table">
-        <thead><tr><th>Niveau</th><th>Libellé</th><th>Comportements observables</th><th>Preuves attendues</th></tr></thead>
+        <thead><tr><th>Niveau</th><th>LibellÃ©</th><th>Comportements observables</th><th>Preuves attendues</th></tr></thead>
         <tbody>${rows.map((row) => `<tr><td class="level">${row[0]}</td><td class="label">${row[1]}</td><td>${row[2]}</td><td>${row[3]}</td></tr>`).join("")}</tbody>
       </table>
     </div>
@@ -292,7 +292,7 @@ function resetForm(state) {
   renderRubric(document.querySelector("#rubricMount"), state);
   updateTotalsUI(state);
   const status = document.querySelector("#autosaveStatus");
-  if (status) status.textContent = "Formulaire réinitialisé — prêt pour la prochaine évaluation";
+  if (status) status.textContent = "Formulaire rÃ©initialisÃ© â€” prÃªt pour la prochaine Ã©valuation";
 }
 
 function downloadJson(state) {
@@ -321,15 +321,15 @@ function exportCsv(state) {
   const rows = [
     ["Projet", state.meta.projectName ?? ""],
     ["Mode", state.meta.mode ?? ""],
-    ["Étudiant·e(s)", state.meta.student ?? ""],
+    ["Ã‰tudiantÂ·e(s)", state.meta.student ?? ""],
     ["Lien GitHub", state.meta.github ?? ""],
     ["Date", state.meta.date ?? ""],
-    ["Périmètre", (state.meta.scope ?? []).join(" | ")],
-    ["Niveau IA déclaré", state.meta.aiLevelDeclared ?? ""],
-    ["Niveau IA observé", state.meta.aiLevelObserved ?? ""],
+    ["PÃ©rimÃ¨tre", (state.meta.scope ?? []).join(" | ")],
+    ["Niveau IA dÃ©clarÃ©", state.meta.aiLevelDeclared ?? ""],
+    ["Niveau IA observÃ©", state.meta.aiLevelObserved ?? ""],
     ["Observations", state.meta.teacherNotes ?? ""],
     [],
-    ["Axe", "Critère", "Score", "Max", "Observations"],
+    ["Axe", "CritÃ¨re", "Score", "Max", "Observations"],
   ];
   for (const section of rubric) {
     for (const criterion of section.criteria) {
@@ -359,8 +359,8 @@ function downloadExcel(state) {
   const wb = XLSX.utils.book_new();
   const summaryRows = [
     ["Axe", "Score", "Max"],
-    ["Maîtrise technique", state.scores.tech_func ?? 0, 30],
-    ["Performance & qualité", state.scores.quality_code ?? 0, 15],
+    ["MaÃ®trise technique", state.scores.tech_func ?? 0, 30],
+    ["Performance & qualitÃ©", state.scores.quality_code ?? 0, 15],
     ["Engagement", state.scores.eng_collab ?? 0, 8],
     ["Usage IA", state.scores.ai_level ?? 0, 4],
     ["TOTAL (/100)", computeTotals(state).total, 100],
@@ -368,9 +368,9 @@ function downloadExcel(state) {
   ];
   const wsSummary = XLSX.utils.aoa_to_sheet(summaryRows);
   wsSummary["!cols"] = [{ wch: 28 }, { wch: 12 }, { wch: 8 }];
-  XLSX.utils.book_append_sheet(wb, wsSummary, "Synthèse");
+  XLSX.utils.book_append_sheet(wb, wsSummary, "SynthÃ¨se");
 
-  const detailRows = [["Axe", "Critère", "Score", "Max", "Observations", "Preuves", "Statuts"]];
+  const detailRows = [["Axe", "CritÃ¨re", "Score", "Max", "Observations", "Preuves", "Statuts"]];
   for (const section of rubric) {
     for (const criterion of section.criteria) {
       const proofStatuses = (state.proofs[criterion.id] || []).map((proof, idx) => `${criterion.evidence[idx] ?? "preuve"}: ${proof.status || "unchecked"}`).join(" | ");
@@ -379,7 +379,7 @@ function downloadExcel(state) {
   }
   const wsDetail = XLSX.utils.aoa_to_sheet(detailRows);
   wsDetail["!cols"] = [{ wch: 24 }, { wch: 30 }, { wch: 10 }, { wch: 8 }, { wch: 26 }, { wch: 28 }, { wch: 28 }];
-  XLSX.utils.book_append_sheet(wb, wsDetail, "Détails");
+  XLSX.utils.book_append_sheet(wb, wsDetail, "DÃ©tails");
 
   const project = (state.meta.projectName || "grille-ponderee").replace(/\s+/g, "_") || "grille-ponderee";
   XLSX.writeFile(wb, `${project}_${new Date().toISOString().slice(0, 10)}.xlsx`);
@@ -387,7 +387,7 @@ function downloadExcel(state) {
 }
 
 function promptAfterExport(state) {
-  const shouldReset = window.confirm("Export réussi. Voulez-vous garder l'évaluation ou démarrer une nouvelle évaluation ?\nOK = nouvelle évaluation\nAnnuler = garder");
+  const shouldReset = window.confirm("Export rÃ©ussi. Voulez-vous garder l'Ã©valuation ou dÃ©marrer une nouvelle Ã©valuation ?\nOK = nouvelle Ã©valuation\nAnnuler = garder");
   if (shouldReset) resetForm(state);
 }
 
@@ -502,7 +502,7 @@ function bindInteractions(state) {
   document.querySelector("#btnPdf")?.addEventListener("click", () => window.print());
 
   document.querySelector("#btnReset")?.addEventListener("click", () => {
-    const ok = window.confirm("Réinitialiser toutes les données (scores, champs, observations) ?");
+    const ok = window.confirm("RÃ©initialiser toutes les donnÃ©es (scores, champs, observations) ?");
     if (!ok) return;
     resetForm(state);
   });
@@ -520,4 +520,4 @@ function main() {
   bindInteractions(state);
 }
 
-document.addEventListener("DOMContentLoaded", main);
+document.addEventListener("DOMContentLoaded", main);
