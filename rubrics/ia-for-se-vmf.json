@@ -1,0 +1,32 @@
+{
+  "id": "ia-for-se-vmf",
+  "title": "IA for Software Engineering (VMF)",
+  "version": "v2",
+  "draft": true,
+  "axes": [
+    {
+      "id": "individual",
+      "title": "Travail individuel",
+      "max": 8,
+      "criteria": [
+        { "id": "tech_mastery", "title": "Maîtrise technique", "max": 1, "draft": true },
+        { "id": "doc_individual", "title": "Documentation individuelle", "max": 2, "draft": true },
+        { "id": "argumentation", "title": "Présentation et argumentation", "max": 1.5, "draft": true },
+        { "id": "api_integration", "title": "Intégration d'une API / modèle IA", "max": 3.5, "draft": true, "sameGradeForPair": true }
+      ]
+    },
+    {
+      "id": "team",
+      "title": "Travail d'équipe",
+      "max": 12,
+      "criteria": [
+        { "id": "anomaly_detection", "title": "Détection intelligente d'anomalies", "max": 2.5, "draft": true },
+        { "id": "architecture", "title": "Architecture globale", "max": 2, "draft": true },
+        { "id": "collaboration", "title": "Collaboration et Git", "max": 1.5, "draft": true },
+        { "id": "performance_eval", "title": "Évaluation de performance et fiabilité", "max": 2, "draft": true },
+        { "id": "report", "title": "Livrable : rapport final", "max": 2.5, "draft": true },
+        { "id": "added_value", "title": "Valeurs ajoutées", "max": 1.5, "draft": true }
+      ]
+    }
+  ]
+}

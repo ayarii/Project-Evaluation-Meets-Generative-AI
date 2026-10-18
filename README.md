@@ -39,9 +39,11 @@ Le projet propose un cadre d'évaluation reposant sur trois principes :
 - ✅ Conversion approximative **/20** affichée en temps réel
 - ✅ Grille par **compétences (niveaux A–D)** pour une évaluation critériée
 - ✅ Échelle d'usage de l'IA **N1–N5**
-- ✅ **Export PDF, Excel et JSON**
+- ✅ **Export PDF, Excel, CSV et JSON**
 - ✅ **Sauvegarde automatique dans le navigateur** : reprise d'une évaluation à tout moment
-- ✅ Réinitialisation du formulaire après chaque soumission
+- ✅ Migration locale des données v1 → v2 pour conserver les évaluations existantes
+- ✅ Réinitialisation du formulaire après chaque soumission, avec confirmation explicite
+- ✅ Aucune dépendance externe requise pour l'usage de base ; le CSV sert de repli si l'export Excel n'est pas disponible
 
 ---
 

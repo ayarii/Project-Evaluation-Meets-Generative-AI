@@ -97,6 +97,28 @@
             <span>Date de validation</span>
             <input name="date" type="date" />
           </label>
+          <label class="field">
+            <span>Niveau IA déclaré</span>
+            <select name="aiLevelDeclared">
+              <option value="">—</option>
+              <option value="N1">N1</option>
+              <option value="N2">N2</option>
+              <option value="N3">N3</option>
+              <option value="N4">N4</option>
+              <option value="N5">N5</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Niveau IA observé</span>
+            <select name="aiLevelObserved">
+              <option value="">—</option>
+              <option value="N1">N1</option>
+              <option value="N2">N2</option>
+              <option value="N3">N3</option>
+              <option value="N4">N4</option>
+              <option value="N5">N5</option>
+            </select>
+          </label>
           <div class="callout">
             <div class="callout-title">Périmètre d'évaluation</div>
             <div class="callout-body">
@@ -233,7 +255,6 @@
       </footer>
     </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js" defer></script>
-    <script src="./competences.js" defer></script>
+    <script type="module" src="./competences.js" defer></script>
   </body>
 </html>
