@@ -49,7 +49,7 @@ function readLegacyState() {
   if (raw) {
     try {
       const parsed = JSON.parse(raw);
-      if (parsed && typeof parsed === "object") return parsed;
+      if (parsed && typeof parsed === "object") return normalizeState(parsed);
     } catch {
       localStorage.removeItem(STORAGE_KEY);
     }
@@ -60,7 +60,7 @@ function readLegacyState() {
 
   try {
     const parsed = JSON.parse(legacy);
-    const state = parsed && typeof parsed === "object" ? parsed : emptyState();
+    const state = normalizeState(parsed);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     localStorage.removeItem(LEGACY_STORAGE_KEY);
     return state;
@@ -87,6 +87,22 @@ function emptyState() {
     scores: {},
     notes: {},
     proofs: {},
+  };
+}
+
+function normalizeState(value) {
+  const defaults = emptyState();
+  if (!value || typeof value !== "object" || Array.isArray(value)) return defaults;
+
+  const isRecord = (candidate) => candidate && typeof candidate === "object" && !Array.isArray(candidate);
+  return {
+    ...defaults,
+    ...value,
+    version: 2,
+    meta: { ...defaults.meta, ...(isRecord(value.meta) ? value.meta : {}) },
+    scores: isRecord(value.scores) ? value.scores : {},
+    notes: isRecord(value.notes) ? value.notes : {},
+    proofs: isRecord(value.proofs) ? value.proofs : {},
   };
 }
 
@@ -276,7 +292,7 @@ function hydrateMeta(state) {
 
 function ensureProofs(state) {
   for (const criterion of rubric.flatMap((section) => section.criteria)) {
-    const list = state.proofs[criterion.id] ?? [];
+    const list = Array.isArray(state.proofs[criterion.id]) ? state.proofs[criterion.id] : [];
     const mapped = (criterion.evidence || []).map((_, index) => ({
       status: list[index]?.status ?? "unchecked",
       url: list[index]?.url ?? "",
