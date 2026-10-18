@@ -5,35 +5,35 @@ import { readStoredState, writeStoredState, STORAGE_KEYS } from "./storage.js";
   const STORAGE_KEY = STORAGE_KEYS.competencesV2;
 
   const LEVELS = ["A", "B", "C", "D"];
-  const LEVEL_LABELS = { A: "Excellent", B: "Maîtrisé", C: "En cours d'acquisition", D: "Non acquis" };
+  const LEVEL_LABELS = { A: "Excellent", B: "MaÃ®trisÃ©", C: "En cours d'acquisition", D: "Non acquis" };
 
   const rubric = [
-    { id: "tech", title: "1. Maîtrise technique", max: 40, criteria: [
-      { id: "tech_func", title: "Fonctionnalités attendues", max: 30, levels: { A: "Toutes les fonctionnalités du cahier des charges sont implémentées, testées et fonctionnent sans erreur bloquante.", B: "Toutes les fonctionnalités attendues sont présentes et opérationnelles ; quelques erreurs mineures ponctuelles.", C: "La majorité des fonctionnalités sont présentes mais certaines restent incomplètes ou instables.", D: "Des fonctionnalités majeures sont absentes ou non fonctionnelles ; le projet ne démarre pas ou plante." } },
-      { id: "tech_understand", title: "Compréhension technique / architecture", max: 10, levels: { A: "Explique avec précision l'ensemble des choix techniques et l'architecture ; justifie des alternatives possibles.", B: "Explique correctement le fonctionnement et les choix principaux du projet.", C: "Décrit le projet de façon générale mais peine à justifier les choix techniques ou l'architecture.", D: "Ne peut pas expliquer le fonctionnement du projet ou attribue le code à une source externe sans démontrer la compréhension." } }
+    { id: "tech", title: "1. MaÃ®trise technique", max: 40, criteria: [
+      { id: "tech_func", title: "FonctionnalitÃ©s attendues", max: 30, levels: { A: "Toutes les fonctionnalitÃ©s du cahier des charges sont implÃ©mentÃ©es, testÃ©es et fonctionnent sans erreur bloquante.", B: "Toutes les fonctionnalitÃ©s attendues sont prÃ©sentes et opÃ©rationnelles ; quelques erreurs mineures ponctuelles.", C: "La majoritÃ© des fonctionnalitÃ©s sont prÃ©sentes mais certaines restent incomplÃ¨tes ou instables.", D: "Des fonctionnalitÃ©s majeures sont absentes ou non fonctionnelles ; le projet ne dÃ©marre pas ou plante." } },
+      { id: "tech_understand", title: "ComprÃ©hension technique / architecture", max: 10, levels: { A: "Explique avec prÃ©cision l'ensemble des choix techniques et l'architecture ; justifie des alternatives possibles.", B: "Explique correctement le fonctionnement et les choix principaux du projet.", C: "DÃ©crit le projet de faÃ§on gÃ©nÃ©rale mais peine Ã  justifier les choix techniques ou l'architecture.", D: "Ne peut pas expliquer le fonctionnement du projet ou attribue le code Ã  une source externe sans dÃ©montrer la comprÃ©hension." } }
     ] },
-    { id: "quality", title: "2. Performance & qualité", max: 30, criteria: [
-      { id: "quality_code", title: "Qualité globale du code et du projet", max: 15, levels: { A: "Code structuré en modules réutilisables, lisible, sans erreur en production.", B: "Code globalement propre et lisible ; quelques erreurs mineures non bloquantes.", C: "Code fonctionnel mais désorganisé ou peu commenté.", D: "Code difficile à lire, erreurs bloquantes constatées en production." } },
-      { id: "quality_ux", title: "UX / UI", max: 15, levels: { A: "Interface fluide et intuitive ; tous les cas d'erreur sont gérés.", B: "Navigation logique et ergonomique ; la majorité des cas d'usage courants sont couverts.", C: "Interface utilisable mais confuse par endroits ; certains cas d'erreur ne sont pas gérés.", D: "Interface peu compréhensible, navigation incohérente, blocages fréquents." } }
+    { id: "quality", title: "2. Performance & qualitÃ©", max: 30, criteria: [
+      { id: "quality_code", title: "QualitÃ© globale du code et du projet", max: 15, levels: { A: "Code structurÃ© en modules rÃ©utilisables, lisible, sans erreur en production.", B: "Code globalement propre et lisible ; quelques erreurs mineures non bloquantes.", C: "Code fonctionnel mais dÃ©sorganisÃ© ou peu commentÃ©.", D: "Code difficile Ã  lire, erreurs bloquantes constatÃ©es en production." } },
+      { id: "quality_ux", title: "UX / UI", max: 15, levels: { A: "Interface fluide et intuitive ; tous les cas d'erreur sont gÃ©rÃ©s.", B: "Navigation logique et ergonomique ; la majoritÃ© des cas d'usage courants sont couverts.", C: "Interface utilisable mais confuse par endroits ; certains cas d'erreur ne sont pas gÃ©rÃ©s.", D: "Interface peu comprÃ©hensible, navigation incohÃ©rente, blocages frÃ©quents." } }
     ] },
     { id: "engagement", title: "3. Engagement & processus", max: 20, criteria: [
-      { id: "eng_collab", title: "Outils collaboratifs (Git, GitHub Projects…)", max: 8, levels: { A: "Commits réguliers à chaque session, messages clairs et descriptifs, usage de branches/PR.", B: "Commits réguliers avec des messages globalement clairs ; usage correct des fonctionnalités de base de Git.", C: "Commits rares ou peu descriptifs ; usage minimal des fonctionnalités collaboratives.", D: "Un seul commit final ou absence d'historique exploitable." } },
-      { id: "eng_autonomy", title: "Autonomie & initiative", max: 6, levels: { A: "Résout des problèmes non spécifiés dans le cahier des charges ; propose et développe des idées personnelles.", B: "Avance de façon autonome sur les tâches prévues, avec peu de sollicitation de l'enseignant.", C: "A besoin d'un accompagnement régulier pour avancer sur les tâches.", D: "Ne progresse pas sans intervention directe et continue de l'enseignant." } },
-      { id: "eng_plan", title: "Organisation & planification", max: 6, levels: { A: "Plan initial suivi et ajusté avec pertinence ; jalons respectés.", B: "Organisation globalement respectée ; quelques ajustements mineurs.", C: "Organisation présente mais peu suivie dans les faits ; retards ponctuels.", D: "Absence de planification visible ; travail réalisé dans l'urgence." } }
+      { id: "eng_collab", title: "Outils collaboratifs (Git, GitHub Projectsâ€¦)", max: 8, levels: { A: "Commits rÃ©guliers Ã  chaque session, messages clairs et descriptifs, usage de branches/PR.", B: "Commits rÃ©guliers avec des messages globalement clairs ; usage correct des fonctionnalitÃ©s de base de Git.", C: "Commits rares ou peu descriptifs ; usage minimal des fonctionnalitÃ©s collaboratives.", D: "Un seul commit final ou absence d'historique exploitable." } },
+      { id: "eng_autonomy", title: "Autonomie & initiative", max: 6, levels: { A: "RÃ©sout des problÃ¨mes non spÃ©cifiÃ©s dans le cahier des charges ; propose et dÃ©veloppe des idÃ©es personnelles.", B: "Avance de faÃ§on autonome sur les tÃ¢ches prÃ©vues, avec peu de sollicitation de l'enseignant.", C: "A besoin d'un accompagnement rÃ©gulier pour avancer sur les tÃ¢ches.", D: "Ne progresse pas sans intervention directe et continue de l'enseignant." } },
+      { id: "eng_plan", title: "Organisation & planification", max: 6, levels: { A: "Plan initial suivi et ajustÃ© avec pertinence ; jalons respectÃ©s.", B: "Organisation globalement respectÃ©e ; quelques ajustements mineurs.", C: "Organisation prÃ©sente mais peu suivie dans les faits ; retards ponctuels.", D: "Absence de planification visible ; travail rÃ©alisÃ© dans l'urgence." } }
     ] },
-    { id: "ai", title: "4. Usage de l'IA générative", max: 10, criteria: [
-      { id: "ai_level", title: "Niveau d'usage de l'IA (échelle N1–N5)", hint: "Ce critère évalue la cohérence entre le niveau N déclaré et les preuves observées — pas le niveau N lui-même.", max: 4, levels: { A: "Le niveau déclaré est pleinement cohérent avec les preuves fournies.", B: "Le niveau déclaré est globalement cohérent avec les preuves fournies, avec de légers écarts mineurs.", C: "Le niveau déclaré est partiellement étayé ; certaines preuves manquent ou sont peu convaincantes.", D: "Aucune preuve d'usage fournie, ou incohérence marquée entre le niveau déclaré et l'usage réellement observé." } },
-      { id: "ai_justify", title: "Justification de l'usage de l'IA", max: 3, levels: { A: "Explique précisément pourquoi, quand et comment l'IA a été utilisée, avec des exemples concrets.", B: "Justifie l'usage de l'IA de façon correcte mais assez générale.", C: "La justification est vague ou se limite à une déclaration générale.", D: "Aucune justification fournie, ou usage de l'IA non mentionné alors qu'il est observable dans le rendu." } },
-      { id: "ai_critical", title: "Esprit critique face à l'IA", max: 3, levels: { A: "Au moins un exemple documenté de correction ou de rejet d'une proposition de l'IA, avec analyse des limites ou biais identifiés.", B: "Mentionne avoir vérifié ou ajusté les sorties de l'IA, sans documentation détaillée du processus.", C: "Accepte largement les sorties de l'IA sans les questionner, avec de rares nuances.", D: "Aucune trace d'esprit critique ; les sorties de l'IA sont reprises telles quelles." } }
+    { id: "ai", title: "4. Usage de l'IA gÃ©nÃ©rative", max: 10, criteria: [
+      { id: "ai_level", title: "Niveau d'usage de l'IA (Ã©chelle N1â€“N5)", hint: "Ce critÃ¨re Ã©value la cohÃ©rence entre le niveau N dÃ©clarÃ© et les preuves observÃ©es â€” pas le niveau N lui-mÃªme.", max: 4, levels: { A: "Le niveau dÃ©clarÃ© est pleinement cohÃ©rent avec les preuves fournies.", B: "Le niveau dÃ©clarÃ© est globalement cohÃ©rent avec les preuves fournies, avec de lÃ©gers Ã©carts mineurs.", C: "Le niveau dÃ©clarÃ© est partiellement Ã©tayÃ© ; certaines preuves manquent ou sont peu convaincantes.", D: "Aucune preuve d'usage fournie, ou incohÃ©rence marquÃ©e entre le niveau dÃ©clarÃ© et l'usage rÃ©ellement observÃ©." } },
+      { id: "ai_justify", title: "Justification de l'usage de l'IA", max: 3, levels: { A: "Explique prÃ©cisÃ©ment pourquoi, quand et comment l'IA a Ã©tÃ© utilisÃ©e, avec des exemples concrets.", B: "Justifie l'usage de l'IA de faÃ§on correcte mais assez gÃ©nÃ©rale.", C: "La justification est vague ou se limite Ã  une dÃ©claration gÃ©nÃ©rale.", D: "Aucune justification fournie, ou usage de l'IA non mentionnÃ© alors qu'il est observable dans le rendu." } },
+      { id: "ai_critical", title: "Esprit critique face Ã  l'IA", max: 3, levels: { A: "Au moins un exemple documentÃ© de correction ou de rejet d'une proposition de l'IA, avec analyse des limites ou biais identifiÃ©s.", B: "Mentionne avoir vÃ©rifiÃ© ou ajustÃ© les sorties de l'IA, sans documentation dÃ©taillÃ©e du processus.", C: "Accepte largement les sorties de l'IA sans les questionner, avec de rares nuances.", D: "Aucune trace d'esprit critique ; les sorties de l'IA sont reprises telles quelles." } }
     ] }
   ];
 
   const iaScale = [
-    { level: "N1", label: "Sans IA", behaviors: "Aucun outil d'IA utilisé. L'étudiant·e travaille uniquement avec des ressources humaines et la documentation standard.", evidence: "Déclaration écrite + aucune mention d'IA dans le journal de bord." },
-    { level: "N2", label: "Préparation avec IA", behaviors: "IA utilisée pour l'idéation, la recherche, le brainstorming. L'étudiant·e réécrit ensuite avec ses propres mots.", evidence: "Captures de prompts de recherche ; sections de pré-rédaction dans le journal de bord." },
-    { level: "N3", label: "Collaboration avec IA", behaviors: "IA comme assistant : génération de code, amélioration de texte, correction. L'étudiant·e relit et ajuste chaque sortie.", evidence: "Journal des échanges IA (ChatGPT, Copilot…) ; éléments montrant l'origine IA et les corrections apportées." },
-    { level: "N4", label: "Intégration complète", behaviors: "IA intégrée à chaque étape. L'étudiant·e orchestre les outils, choisit les modèles et évalue les limites.", evidence: "Pipeline détaillé (quel outil, à quelle étape) ; exemples de sorties IA rejetées/corrigées ; soutenance orale." },
-    { level: "N5", label: "Exploration créative", behaviors: "IA utilisée de façon innovante et réflexive. L'étudiant·e questionne les biais, documente les expérimentations, crée de nouveaux usages.", evidence: "Rapport réflexif sur l'usage de l'IA ; expérimentations documentées ; exemples de détournements créatifs ou critiques." },
+    { level: "N1", label: "Sans IA", behaviors: "Aucun outil d'IA utilisÃ©. L'Ã©tudiantÂ·e travaille uniquement avec des ressources humaines et la documentation standard.", evidence: "DÃ©claration Ã©crite + aucune mention d'IA dans le journal de bord." },
+    { level: "N2", label: "PrÃ©paration avec IA", behaviors: "IA utilisÃ©e pour l'idÃ©ation, la recherche, le brainstorming. L'Ã©tudiantÂ·e rÃ©Ã©crit ensuite avec ses propres mots.", evidence: "Captures de prompts de recherche ; sections de prÃ©-rÃ©daction dans le journal de bord." },
+    { level: "N3", label: "Collaboration avec IA", behaviors: "IA comme assistant : gÃ©nÃ©ration de code, amÃ©lioration de texte, correction. L'Ã©tudiantÂ·e relit et ajuste chaque sortie.", evidence: "Journal des Ã©changes IA (ChatGPT, Copilotâ€¦) ; Ã©lÃ©ments montrant l'origine IA et les corrections apportÃ©es." },
+    { level: "N4", label: "IntÃ©gration complÃ¨te", behaviors: "IA intÃ©grÃ©e Ã  chaque Ã©tape. L'Ã©tudiantÂ·e orchestre les outils, choisit les modÃ¨les et Ã©value les limites.", evidence: "Pipeline dÃ©taillÃ© (quel outil, Ã  quelle Ã©tape) ; exemples de sorties IA rejetÃ©es/corrigÃ©es ; soutenance orale." },
+    { level: "N5", label: "Exploration crÃ©ative", behaviors: "IA utilisÃ©e de faÃ§on innovante et rÃ©flexive. L'Ã©tudiantÂ·e questionne les biais, documente les expÃ©rimentations, crÃ©e de nouveaux usages.", evidence: "Rapport rÃ©flexif sur l'usage de l'IA ; expÃ©rimentations documentÃ©es ; exemples de dÃ©tournements crÃ©atifs ou critiques." },
   ];
 
   const $ = (selector, root = document) => root.querySelector(selector);
@@ -64,7 +64,7 @@ import { readStoredState, writeStoredState, STORAGE_KEYS } from "./storage.js";
   function saveState(state) {
     writeStoredState(STORAGE_KEY, state);
     const el = $("#autosaveStatus");
-    if (el) el.textContent = `Enregistré à ${new Date().toLocaleTimeString("fr-FR")}`;
+    if (el) el.textContent = `EnregistrÃ© Ã  ${new Date().toLocaleTimeString("fr-FR")}`;
   }
 
   function allCriteria() {
@@ -104,8 +104,8 @@ import { readStoredState, writeStoredState, STORAGE_KEYS } from "./storage.js";
       head.className = "section-head";
       head.innerHTML = `
         <h3 class="section-title">${section.title}</h3>
-        <div class="pill" title="Niveaux renseignés dans cette section">
-          <span>Renseignés</span>
+        <div class="pill" title="Niveaux renseignÃ©s dans cette section">
+          <span>RenseignÃ©s</span>
           <strong><span data-section-filled="${section.id}">0</span> / ${section.criteria.length}</strong>
         </div>
       `;
@@ -129,8 +129,8 @@ import { readStoredState, writeStoredState, STORAGE_KEYS } from "./storage.js";
         `).join("");
 
         const descriptor = selected
-          ? `<div class="level-descriptor lvl-${selected.toLowerCase()}"><strong>Niveau ${selected} — ${LEVEL_LABELS[selected]}</strong><p>${escapeHtml(criterion.levels[selected])}</p></div>`
-          : `<div class="level-descriptor level-descriptor-empty small muted">Sélectionnez un niveau A, B, C ou D pour afficher le descripteur correspondant.</div>`;
+          ? `<div class="level-descriptor lvl-${selected.toLowerCase()}"><strong>Niveau ${selected} â€” ${LEVEL_LABELS[selected]}</strong><p>${escapeHtml(criterion.levels[selected])}</p></div>`
+          : `<div class="level-descriptor level-descriptor-empty small muted">SÃ©lectionnez un niveau A, B, C ou D pour afficher le descripteur correspondant.</div>`;
 
         criterionEl.innerHTML = `
           <div class="criterion-head">
@@ -141,7 +141,7 @@ import { readStoredState, writeStoredState, STORAGE_KEYS } from "./storage.js";
             </div>
             <div class="criterion-meta">
               <span class="tag tag-max">Poids : ${criterion.max} pts</span>
-              ${converted !== null ? `<span class="tag tag-converted" data-converted-tag="${criterion.id}">˜ ${converted} pts</span>` : `<span class="tag tag-converted" data-converted-tag="${criterion.id}" hidden>—</span>`}
+              ${converted !== null ? `<span class="tag tag-converted" data-converted-tag="${criterion.id}">Ëœ ${converted} pts</span>` : `<span class="tag tag-converted" data-converted-tag="${criterion.id}" hidden>â€”</span>`}
             </div>
           </div>
 
@@ -152,8 +152,8 @@ import { readStoredState, writeStoredState, STORAGE_KEYS } from "./storage.js";
           ${descriptor}
 
           <label class="field comp-note-field">
-            <span>Observations (critère)</span>
-            <textarea rows="2" data-note-input="${criterion.id}" placeholder="Notes / justifications…">${escapeHtml(note)}</textarea>
+            <span>Observations (critÃ¨re)</span>
+            <textarea rows="2" data-note-input="${criterion.id}" placeholder="Notes / justificationsâ€¦">${escapeHtml(note)}</textarea>
           </label>
         `;
 
@@ -177,16 +177,16 @@ import { readStoredState, writeStoredState, STORAGE_KEYS } from "./storage.js";
     ).join("");
 
     mount.innerHTML = `
-      <div class="comp-table-wrap" role="region" aria-label="Référentiel complet des niveaux">
+      <div class="comp-table-wrap" role="region" aria-label="RÃ©fÃ©rentiel complet des niveaux">
         <table class="comp-table">
           <thead>
             <tr>
               <th>Axe</th>
-              <th>Sous-critère</th>
-              <th>A — Excellent</th>
-              <th>B — Maîtrisé</th>
-              <th>C — En cours d'acquisition</th>
-              <th>D — Non acquis</th>
+              <th>Sous-critÃ¨re</th>
+              <th>A â€” Excellent</th>
+              <th>B â€” MaÃ®trisÃ©</th>
+              <th>C â€” En cours d'acquisition</th>
+              <th>D â€” Non acquis</th>
             </tr>
           </thead>
           <tbody>${rows}</tbody>
@@ -197,12 +197,12 @@ import { readStoredState, writeStoredState, STORAGE_KEYS } from "./storage.js";
 
   function renderIaScale(mount) {
     mount.innerHTML = `
-      <div class="ia-table-wrap" role="region" aria-label="Échelle indicative d'usage de l'IA">
+      <div class="ia-table-wrap" role="region" aria-label="Ã‰chelle indicative d'usage de l'IA">
         <table class="ia-table">
           <thead>
             <tr>
               <th>Niveau</th>
-              <th>Libellé</th>
+              <th>LibellÃ©</th>
               <th>Comportements observables</th>
               <th>Preuves attendues</th>
             </tr>
@@ -238,9 +238,9 @@ import { readStoredState, writeStoredState, STORAGE_KEYS } from "./storage.js";
     const totalScore20 = $("#totalScore20");
     const scoreHint = $("#scoreHint");
 
-    if (totalScore) totalScore.textContent = complete ? String(total) : "—";
-    if (totalScore20) totalScore20.textContent = complete ? String(toScoreOutOf20(total)) : "—";
-    if (scoreHint) scoreHint.textContent = complete ? "Conversion optionnelle (milieu de fourchette A–D)" : `${totalCriteria - filled} critère(s) restant(s) pour calculer le score converti`;
+    if (totalScore) totalScore.textContent = complete ? String(total) : "â€”";
+    if (totalScore20) totalScore20.textContent = complete ? String(toScoreOutOf20(total)) : "â€”";
+    if (scoreHint) scoreHint.textContent = complete ? "Conversion optionnelle (milieu de fourchette Aâ€“D)" : `${totalCriteria - filled} critÃ¨re(s) restant(s) pour calculer le score converti`;
 
     const progress = $("#totalProgress");
     const bar = $(".progress");
@@ -287,7 +287,7 @@ import { readStoredState, writeStoredState, STORAGE_KEYS } from "./storage.js";
     updateTotalsUI(state);
 
     const el = $("#autosaveStatus");
-    if (el) el.textContent = "Formulaire réinitialisé — prêt pour la prochaine évaluation";
+    if (el) el.textContent = "Formulaire rÃ©initialisÃ© â€” prÃªt pour la prochaine Ã©valuation";
   }
 
   function downloadJson(state) {
@@ -323,15 +323,15 @@ import { readStoredState, writeStoredState, STORAGE_KEYS } from "./storage.js";
     const rows = [
       ["Projet", state.meta.projectName ?? ""],
       ["Mode", state.meta.mode ?? ""],
-      ["Étudiant·e(s)", state.meta.student ?? ""],
+      ["Ã‰tudiantÂ·e(s)", state.meta.student ?? ""],
       ["Lien GitHub", state.meta.github ?? ""],
       ["Date", state.meta.date ?? ""],
-      ["Périmètre", (state.meta.scope ?? []).join(" | ")],
-      ["Niveau IA déclaré", state.meta.aiLevelDeclared ?? ""],
-      ["Niveau IA observé", state.meta.aiLevelObserved ?? ""],
+      ["PÃ©rimÃ¨tre", (state.meta.scope ?? []).join(" | ")],
+      ["Niveau IA dÃ©clarÃ©", state.meta.aiLevelDeclared ?? ""],
+      ["Niveau IA observÃ©", state.meta.aiLevelObserved ?? ""],
       ["Observations", state.meta.teacherNotes ?? ""],
       [],
-      ["Axe", "Critère", "Niveau", "Pts convertis", "Observations"],
+      ["Axe", "CritÃ¨re", "Niveau", "Pts convertis", "Observations"],
     ];
 
     for (const section of rubric) {
@@ -363,20 +363,20 @@ import { readStoredState, writeStoredState, STORAGE_KEYS } from "./storage.js";
     const totals = computeTotals(state);
     const wb = XLSX.utils.book_new();
     const summaryRows = [
-      ["Axe", "Niveaux renseignés", "Score converti", "Max"],
+      ["Axe", "Niveaux renseignÃ©s", "Score converti", "Max"],
       ...rubric.map((section) => {
         const filled = section.criteria.filter((criterion) => state.levels[criterion.id]).length;
         return [section.title, `${filled}/${section.criteria.length}`, totals.bySection[section.id] ?? 0, section.max];
       }),
-      ["TOTAL (/100)", `${totals.filled}/${totals.totalCriteria}`, totals.complete ? totals.total : "—", 100],
-      ["TOTAL (/20)", "", totals.complete ? toScoreOutOf20(totals.total) : "—", 20],
+      ["TOTAL (/100)", `${totals.filled}/${totals.totalCriteria}`, totals.complete ? totals.total : "â€”", 100],
+      ["TOTAL (/20)", "", totals.complete ? toScoreOutOf20(totals.total) : "â€”", 20],
     ];
 
     const wsSummary = XLSX.utils.aoa_to_sheet(summaryRows);
     wsSummary["!cols"] = [{ wch: 28 }, { wch: 18 }, { wch: 14 }, { wch: 8 }];
-    XLSX.utils.book_append_sheet(wb, wsSummary, "Synthèse");
+    XLSX.utils.book_append_sheet(wb, wsSummary, "SynthÃ¨se");
 
-    const detailHeader = ["Axe", "Critère", "Niveau", "Libellé niveau", "Pts convertis", "Max", "Descripteur", "Observations"];
+    const detailHeader = ["Axe", "CritÃ¨re", "Niveau", "LibellÃ© niveau", "Pts convertis", "Max", "Descripteur", "Observations"];
     const detailRows = [detailHeader];
     for (const section of rubric) {
       for (const criterion of section.criteria) {
@@ -387,24 +387,24 @@ import { readStoredState, writeStoredState, STORAGE_KEYS } from "./storage.js";
 
     const wsDetails = XLSX.utils.aoa_to_sheet(detailRows);
     wsDetails["!cols"] = [{ wch: 26 }, { wch: 32 }, { wch: 6 }, { wch: 22 }, { wch: 10 }, { wch: 6 }, { wch: 52 }, { wch: 40 }];
-    XLSX.utils.book_append_sheet(wb, wsDetails, "Détails");
+    XLSX.utils.book_append_sheet(wb, wsDetails, "DÃ©tails");
 
     const metaRows = [
       ["Champ", "Valeur"],
       ["Projet", state.meta.projectName ?? ""],
       ["Mode", state.meta.mode ?? ""],
-      ["Étudiant·e(s)", state.meta.student ?? ""],
+      ["Ã‰tudiantÂ·e(s)", state.meta.student ?? ""],
       ["Lien GitHub", state.meta.github ?? ""],
       ["Date de validation", state.meta.date ?? ""],
-      ["Périmètre", (state.meta.scope ?? []).join(", ")],
-      ["Niveau IA déclaré", state.meta.aiLevelDeclared ?? ""],
-      ["Niveau IA observé", state.meta.aiLevelObserved ?? ""],
-      ["Observations enseignant·e", state.meta.teacherNotes ?? ""],
-      ["Exporté le", new Date().toLocaleString("fr-FR")],
+      ["PÃ©rimÃ¨tre", (state.meta.scope ?? []).join(", ")],
+      ["Niveau IA dÃ©clarÃ©", state.meta.aiLevelDeclared ?? ""],
+      ["Niveau IA observÃ©", state.meta.aiLevelObserved ?? ""],
+      ["Observations enseignantÂ·e", state.meta.teacherNotes ?? ""],
+      ["ExportÃ© le", new Date().toLocaleString("fr-FR")],
     ];
     const wsMeta = XLSX.utils.aoa_to_sheet(metaRows);
     wsMeta["!cols"] = [{ wch: 26 }, { wch: 60 }];
-    XLSX.utils.book_append_sheet(wb, wsMeta, "Métadonnées");
+    XLSX.utils.book_append_sheet(wb, wsMeta, "MÃ©tadonnÃ©es");
 
     const fileName = `${(state.meta.projectName || "grille-competences").trim().replaceAll(/\s+/g, "_") || "grille-competences"}_${new Date().toISOString().slice(0, 10)}.xlsx`;
     XLSX.writeFile(wb, fileName);
@@ -412,7 +412,7 @@ import { readStoredState, writeStoredState, STORAGE_KEYS } from "./storage.js";
   }
 
   function promptAfterExport(state) {
-    const shouldReset = window.confirm("Export terminé. Archiver et nouvelle évaluation ?");
+    const shouldReset = window.confirm("Export terminÃ©. Archiver et nouvelle Ã©valuation ?");
     if (shouldReset) resetForm(state);
   }
 
@@ -485,7 +485,7 @@ import { readStoredState, writeStoredState, STORAGE_KEYS } from "./storage.js";
     });
 
     $("#btnReset")?.addEventListener("click", () => {
-      const ok = window.confirm("Réinitialiser toutes les données (niveaux, champs, observations) ?");
+      const ok = window.confirm("RÃ©initialiser toutes les donnÃ©es (niveaux, champs, observations) ?");
       if (!ok) return;
       resetForm(state);
     });
@@ -497,7 +497,7 @@ import { readStoredState, writeStoredState, STORAGE_KEYS } from "./storage.js";
       const hidden = panel.hidden;
       panel.hidden = !hidden;
       button.setAttribute("aria-expanded", hidden ? "true" : "false");
-      button.textContent = hidden ? "Masquer le référentiel complet" : "Afficher le référentiel complet";
+      button.textContent = hidden ? "Masquer le rÃ©fÃ©rentiel complet" : "Afficher le rÃ©fÃ©rentiel complet";
     });
   }
 
@@ -518,4 +518,4 @@ import { readStoredState, writeStoredState, STORAGE_KEYS } from "./storage.js";
   }
 
   document.addEventListener("DOMContentLoaded", main);
-})();
+})();
