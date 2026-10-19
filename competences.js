@@ -1,10 +1,11 @@
-import { clamp, LEVEL_BANDS, computeCompetenceTotals, levelToPoints, sanitizeImportedJson, safeParse } from "./scoring.js";
-import { readStoredState, writeStoredState, STORAGE_KEYS } from "./storage.js";
+import { DEFAULT_LEVEL_BANDS, LEVELS, NOTE_STEP, computeCompetenceTotals, levelPointsInterval, normalizeNote } from "./lib/scoring.js";
+import { migrateCompetences } from "./lib/migrate.js";
+import { writeStoredState, STORAGE_KEYS } from "./storage.js";
+import { buildCompetenceExport } from "./lib/competence-export.js";
 
 (() => {
-  const STORAGE_KEY = STORAGE_KEYS.competencesV2;
+  const STORAGE_KEY = STORAGE_KEYS.competencesV3;
 
-  const LEVELS = ["A", "B", "C", "D"];
   const LEVEL_LABELS = { A: "Excellent", B: "Maîtrisé", C: "En cours d'acquisition", D: "Non acquis" };
 
   const rubric = [
@@ -41,6 +42,7 @@ import { readStoredState, writeStoredState, STORAGE_KEYS } from "./storage.js";
 
   function emptyState() {
     return {
+      version: 3,
       meta: {
         projectName: "",
         mode: "",
@@ -52,13 +54,29 @@ import { readStoredState, writeStoredState, STORAGE_KEYS } from "./storage.js";
         aiLevelDeclared: "",
         aiLevelObserved: "",
       },
-      levels: {},
+      criteria: {},
       notes: {},
     };
   }
 
   function loadState() {
-    return readStoredState(STORAGE_KEY, emptyState, [STORAGE_KEYS.competencesV1]);
+    for (const key of [STORAGE_KEY, STORAGE_KEYS.competencesV2, STORAGE_KEYS.competencesV1]) {
+      const raw = localStorage.getItem(key);
+      if (!raw) continue;
+      let parsed;
+      try {
+        parsed = JSON.parse(raw);
+      } catch {
+        localStorage.removeItem(key);
+        continue;
+      }
+      const state = migrateCompetences(parsed);
+      writeStoredState(STORAGE_KEY, state);
+      if (key !== STORAGE_KEY) localStorage.removeItem(key);
+      return state;
+    }
+
+    return emptyState();
   }
 
   function saveState(state) {
@@ -80,19 +98,20 @@ import { readStoredState, writeStoredState, STORAGE_KEYS } from "./storage.js";
       .replaceAll("'", "&#039;");
   }
 
-  function levelToPointsForRender(level, max) {
-    return levelToPoints(level, max, LEVEL_BANDS);
+  function formatNumber(value) {
+    return new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 1 }).format(value);
+  }
+
+  function rangeText(range) {
+    return `${formatNumber(range.min)}–${formatNumber(range.max)} pts`;
   }
 
   function computeTotals(state) {
-    return computeCompetenceTotals(state.levels, rubric, LEVEL_BANDS);
-  }
-
-  function toScoreOutOf20(totalOn100) {
-    return Number(((totalOn100 / 100) * 20).toFixed(1));
+    return computeCompetenceTotals(rubric, state.criteria, DEFAULT_LEVEL_BANDS);
   }
 
   function renderRubric(mount, state) {
+    const totals = computeTotals(state);
     mount.innerHTML = "";
 
     for (const section of rubric) {
@@ -104,17 +123,21 @@ import { readStoredState, writeStoredState, STORAGE_KEYS } from "./storage.js";
       head.className = "section-head";
       head.innerHTML = `
         <h3 class="section-title">${section.title}</h3>
-        <div class="pill" title="Niveaux renseignés dans cette section">
-          <span>Renseignés</span>
-          <strong><span data-section-filled="${section.id}">0</span> / ${section.criteria.length}</strong>
+        <div class="section-totals" aria-live="polite">
+          <span>Somme des notes : <strong data-section-points="${section.id}">${formatNumber(totals.bySection[section.id].points)}</strong> / ${formatNumber(section.max)}</span>
+          <span>Intervalle de l’axe : <strong data-section-range="${section.id}">${rangeText(totals.bySection[section.id].range)}</strong></span>
+          <span class="small muted" data-section-count="${section.id}">${totals.bySection[section.id].levelCount} critère(s) sur ${section.criteria.length}</span>
         </div>
       `;
       sectionEl.appendChild(head);
 
       for (const criterion of section.criteria) {
-        const selected = state.levels[criterion.id] ?? "";
-        const note = state.notes[criterion.id] ?? "";
-        const converted = selected ? levelToPointsForRender(selected, criterion.max) : null;
+        const criterionState = state.criteria[criterion.id] ?? {};
+        const selected = LEVELS.includes(criterionState.level) ? criterionState.level : "";
+        const assignedNote = criterionState.note ?? "";
+        const observation = state.notes[criterion.id] ?? "";
+        const interval = selected ? levelPointsInterval(criterion.max, selected, DEFAULT_LEVEL_BANDS) : null;
+        const criterionResult = totals.byCriterion[criterion.id];
 
         const criterionEl = document.createElement("article");
         criterionEl.className = "criterion";
@@ -131,6 +154,16 @@ import { readStoredState, writeStoredState, STORAGE_KEYS } from "./storage.js";
         const descriptor = selected
           ? `<div class="level-descriptor lvl-${selected.toLowerCase()}"><strong>Niveau ${selected} — ${LEVEL_LABELS[selected]}</strong><p>${escapeHtml(criterion.levels[selected])}</p></div>`
           : `<div class="level-descriptor level-descriptor-empty small muted">Sélectionnez un niveau A, B, C ou D pour afficher le descripteur correspondant.</div>`;
+        const intervalDescription = selected
+          ? `<p class="criterion-interval" data-criterion-interval="${criterion.id}" aria-live="polite">Niveau ${selected} : ${DEFAULT_LEVEL_BANDS[selected].min}–${DEFAULT_LEVEL_BANDS[selected].max} % soit ${formatNumber(interval.min)} à ${formatNumber(interval.max)} pts (sur ${formatNumber(criterion.max)}).</p>`
+          : `<p class="criterion-interval small muted" data-criterion-interval="${criterion.id}" aria-live="polite">Choisissez un niveau pour afficher son intervalle.</p>`;
+        const positionText = criterionResult.position === "below"
+          ? "↓ Sous l’intervalle"
+          : criterionResult.position === "above"
+            ? "↑ Au-dessus de l’intervalle"
+            : criterionResult.position === "inside"
+              ? "✓ Dans l’intervalle"
+              : "";
 
         criterionEl.innerHTML = `
           <div class="criterion-head">
@@ -141,7 +174,6 @@ import { readStoredState, writeStoredState, STORAGE_KEYS } from "./storage.js";
             </div>
             <div class="criterion-meta">
               <span class="tag tag-max">Poids : ${criterion.max} pts</span>
-              ${converted !== null ? `<span class="tag tag-converted" data-converted-tag="${criterion.id}">˜ ${converted} pts</span>` : `<span class="tag tag-converted" data-converted-tag="${criterion.id}" hidden>—</span>`}
             </div>
           </div>
 
@@ -151,9 +183,19 @@ import { readStoredState, writeStoredState, STORAGE_KEYS } from "./storage.js";
 
           ${descriptor}
 
+          ${intervalDescription}
+
+          <div class="assigned-note">
+            <label class="field" for="assigned-note-${criterion.id}">
+              <span>Note attribuée (/${formatNumber(criterion.max)})</span>
+              <input id="assigned-note-${criterion.id}" type="number" min="0" max="${criterion.max}" step="${NOTE_STEP}" data-assigned-note="${criterion.id}" value="${assignedNote === "" ? "" : escapeHtml(assignedNote)}" placeholder="${selected && assignedNote === "" ? "Note à saisir" : "—"}" aria-describedby="note-position-${criterion.id}" />
+            </label>
+            <span class="note-position" id="note-position-${criterion.id}" data-note-position="${criterion.id}" aria-live="polite">${positionText}</span>
+          </div>
+
           <label class="field comp-note-field">
             <span>Observations (critère)</span>
-            <textarea rows="2" data-note-input="${criterion.id}" placeholder="Notes / justifications…">${escapeHtml(note)}</textarea>
+            <textarea rows="2" data-note-input="${criterion.id}" placeholder="Notes / justifications…">${escapeHtml(observation)}</textarea>
           </label>
         `;
 
@@ -223,30 +265,56 @@ import { readStoredState, writeStoredState, STORAGE_KEYS } from "./storage.js";
   }
 
   function updateTotalsUI(state) {
-    const { bySection, total, filled, totalCriteria, complete } = computeTotals(state);
+    const totals = computeTotals(state);
 
     for (const section of rubric) {
-      const count = section.criteria.filter((criterion) => state.levels[criterion.id]).length;
-      const el = document.querySelector(`[data-section-filled="${section.id}"]`);
-      if (el) el.textContent = String(count);
+      const sectionTotals = totals.bySection[section.id];
+      const pointsNode = document.querySelector(`[data-section-points="${section.id}"]`);
+      const rangeNode = document.querySelector(`[data-section-range="${section.id}"]`);
+      const countNode = document.querySelector(`[data-section-count="${section.id}"]`);
+      if (pointsNode) pointsNode.textContent = formatNumber(sectionTotals.points);
+      if (rangeNode) rangeNode.textContent = sectionTotals.levelCount ? rangeText(sectionTotals.range) : "—";
+      if (countNode) countNode.textContent = `${sectionTotals.levelCount} critère(s) sur ${section.criteria.length}`;
     }
 
     const filledEl = $("#levelsFilled");
-    if (filledEl) filledEl.textContent = `${filled} / ${totalCriteria}`;
+    if (filledEl) filledEl.textContent = `${totals.evaluatedCount} / ${totals.totalCriteria}`;
 
     const totalScore = $("#totalScore");
     const totalScore20 = $("#totalScore20");
     const scoreHint = $("#scoreHint");
+    const totalLabel = $("#totalLabel");
+    const totalRange = $("#totalRange");
+    const exportWarning = $("#exportWarning");
+    const migrationNotice = $("#migrationNotice");
 
-    if (totalScore) totalScore.textContent = complete ? String(total) : "—";
-    if (totalScore20) totalScore20.textContent = complete ? String(toScoreOutOf20(total)) : "—";
-    if (scoreHint) scoreHint.textContent = complete ? "Conversion optionnelle (milieu de fourchette A–D)" : `${totalCriteria - filled} critère(s) restant(s) pour calculer le score converti`;
+    if (totalScore) totalScore.textContent = formatNumber(totals.points);
+    if (totalScore20) totalScore20.textContent = totals.complete ? formatNumber(totals.on20) : "—";
+    if (totalLabel) totalLabel.textContent = totals.complete ? "Total" : "Total partiel";
+    if (scoreHint) scoreHint.textContent = `${totals.evaluatedCount} critère(s) évalué(s) sur ${totals.totalCriteria}`;
+    if (totalRange) totalRange.textContent = totals.levelCount ? `Fourchette des niveaux : ${rangeText(totals.rangePoints)}` : "Fourchette des niveaux : —";
+    if (exportWarning) exportWarning.hidden = totals.complete;
+    if (migrationNotice) {
+      migrationNotice.hidden = !Object.values(state.criteria).some((criterion) => criterion?.level && criterion.note == null);
+    }
 
     const progress = $("#totalProgress");
     const bar = $(".progress");
-    const percent = totalCriteria ? (filled / totalCriteria) * 100 : 0;
+    const percent = totals.totalCriteria ? (totals.evaluatedCount / totals.totalCriteria) * 100 : 0;
     if (progress) progress.style.width = `${percent}%`;
     if (bar) bar.setAttribute("aria-valuenow", String(Math.round(percent)));
+
+    for (const [criterionId, criterionTotals] of Object.entries(totals.byCriterion)) {
+      const positionNode = document.querySelector(`[data-note-position="${criterionId}"]`);
+      if (!positionNode) continue;
+      positionNode.textContent = criterionTotals.position === "below"
+        ? "↓ Sous l’intervalle"
+        : criterionTotals.position === "above"
+          ? "↑ Au-dessus de l’intervalle"
+          : criterionTotals.position === "inside"
+            ? "✓ Dans l’intervalle"
+            : "";
+    }
   }
 
   function hydrateMeta(state) {
@@ -279,7 +347,8 @@ import { readStoredState, writeStoredState, STORAGE_KEYS } from "./storage.js";
     const mount = $("#rubricMount");
     const fresh = emptyState();
     state.meta = fresh.meta;
-    state.levels = fresh.levels;
+    state.version = fresh.version;
+    state.criteria = fresh.criteria;
     state.notes = fresh.notes;
     writeStoredState(STORAGE_KEY, state);
     hydrateMeta(state);
@@ -291,22 +360,7 @@ import { readStoredState, writeStoredState, STORAGE_KEYS } from "./storage.js";
   }
 
   function downloadJson(state) {
-    const totals = computeTotals(state);
-    const payload = {
-      exportedAt: new Date().toISOString(),
-      type: "competences",
-      meta: state.meta,
-      levels: state.levels,
-      notes: state.notes,
-      totals: {
-        bySection: totals.bySection,
-        total: totals.complete ? totals.total : null,
-        totalOn20: totals.complete ? toScoreOutOf20(totals.total) : null,
-        filled: totals.filled,
-        totalCriteria: totals.totalCriteria,
-      },
-    };
-
+    const payload = buildCompetenceExport(rubric, state, DEFAULT_LEVEL_BANDS);
     const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -320,6 +374,7 @@ import { readStoredState, writeStoredState, STORAGE_KEYS } from "./storage.js";
   }
 
   function downloadCsv(state) {
+    const totals = computeTotals(state);
     const rows = [
       ["Projet", state.meta.projectName ?? ""],
       ["Mode", state.meta.mode ?? ""],
@@ -331,16 +386,26 @@ import { readStoredState, writeStoredState, STORAGE_KEYS } from "./storage.js";
       ["Niveau IA observé", state.meta.aiLevelObserved ?? ""],
       ["Observations", state.meta.teacherNotes ?? ""],
       [],
-      ["Axe", "Critère", "Niveau", "Pts convertis", "Observations"],
+      ["Axe", "Critère", "Niveau", "Note attribuée", "Poids max", "Statut", "Intervalle indicatif", "Observations"],
     ];
 
     for (const section of rubric) {
       for (const criterion of section.criteria) {
-        const level = state.levels[criterion.id] ?? "";
-        rows.push([section.title, criterion.title, level, level ? String(levelToPointsForRender(level, criterion.max)) : "", state.notes[criterion.id] ?? ""]);
+        const result = totals.byCriterion[criterion.id];
+        rows.push([
+          section.title,
+          criterion.title,
+          result.level ?? "",
+          result.note ?? "",
+          criterion.max,
+          result.status,
+          result.interval ? rangeText(result.interval) : "",
+          state.notes[criterion.id] ?? "",
+        ]);
       }
     }
 
+    rows.push([], ["Total partiel", totals.points, "Fourchette", rangeText(totals.rangePoints), "Complet", totals.complete ? "Oui" : "Non", "Total /20", totals.on20 ?? ""]);
     const csv = rows.map((row) => row.map((cell) => `"${String(cell).replaceAll('"', '""')}"`).join(",")).join("\n");
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
@@ -363,31 +428,66 @@ import { readStoredState, writeStoredState, STORAGE_KEYS } from "./storage.js";
     const totals = computeTotals(state);
     const wb = XLSX.utils.book_new();
     const summaryRows = [
-      ["Axe", "Niveaux renseignés", "Score converti", "Max"],
+      ["Axe", "Somme des notes", "Intervalle indicatif", "Critères évalués", "Critères avec niveau", "Max", "Total /100", "Total /20", "Fourchette /20"],
       ...rubric.map((section) => {
-        const filled = section.criteria.filter((criterion) => state.levels[criterion.id]).length;
-        return [section.title, `${filled}/${section.criteria.length}`, totals.bySection[section.id] ?? 0, section.max];
+        const summary = totals.bySection[section.id];
+        return [
+          section.title,
+          summary.points,
+          rangeText(summary.range),
+          `${summary.evaluated}/${section.criteria.length}`,
+          `${summary.levelCount}/${section.criteria.length}`,
+          section.max,
+          "",
+          "",
+          "",
+        ];
       }),
-      ["TOTAL (/100)", `${totals.filled}/${totals.totalCriteria}`, totals.complete ? totals.total : "—", 100],
-      ["TOTAL (/20)", "", totals.complete ? toScoreOutOf20(totals.total) : "—", 20],
+      ["TOTAL", totals.points, rangeText(totals.rangePoints), `${totals.evaluatedCount}/${totals.totalCriteria}`, `${totals.levelCount}/${totals.totalCriteria}`, totals.totalMax, totals.on100 ?? "—", totals.on20 ?? "—", totals.range20 ? rangeText(totals.range20) : "—"],
     ];
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(summaryRows), "Synthèse");
 
-    const wsSummary = XLSX.utils.aoa_to_sheet(summaryRows);
-    wsSummary["!cols"] = [{ wch: 28 }, { wch: 18 }, { wch: 14 }, { wch: 8 }];
-    XLSX.utils.book_append_sheet(wb, wsSummary, "Synthèse");
-
-    const detailHeader = ["Axe", "Critère", "Niveau", "Libellé niveau", "Pts convertis", "Max", "Descripteur", "Observations"];
-    const detailRows = [detailHeader];
+    const detailRows = [["Axe", "Critère", "Niveau", "Note attribuée", "Poids max", "Statut", "Intervalle min", "Intervalle max", "Position", "Descripteur", "Observations"]];
     for (const section of rubric) {
       for (const criterion of section.criteria) {
-        const level = state.levels[criterion.id] ?? "";
-        detailRows.push([section.title, criterion.title, level, level ? LEVEL_LABELS[level] : "", level ? levelToPointsForRender(level, criterion.max) : "", criterion.max, level ? criterion.levels[level] : "", String(state.notes[criterion.id] ?? "")]);
+        const result = totals.byCriterion[criterion.id];
+        detailRows.push([
+          section.title,
+          criterion.title,
+          result.level ?? "",
+          result.note ?? "",
+          criterion.max,
+          result.status,
+          result.interval?.min ?? "",
+          result.interval?.max ?? "",
+          result.position ?? "",
+          result.level ? criterion.levels[result.level] : "",
+          String(state.notes[criterion.id] ?? ""),
+        ]);
       }
     }
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(detailRows), "Détails");
 
-    const wsDetails = XLSX.utils.aoa_to_sheet(detailRows);
-    wsDetails["!cols"] = [{ wch: 26 }, { wch: 32 }, { wch: 6 }, { wch: 22 }, { wch: 10 }, { wch: 6 }, { wch: 52 }, { wch: 40 }];
-    XLSX.utils.book_append_sheet(wb, wsDetails, "Détails");
+    const intervalRows = [
+      ["Intervalles de niveaux", "Les notes sont saisies par l'évaluateur ; les intervalles sont indicatifs."],
+      ["Niveau", "Pourcentage", "Critère", "Poids max", "Minimum (pts)", "Maximum (pts)"],
+    ];
+    for (const section of rubric) {
+      for (const criterion of section.criteria) {
+        for (const level of LEVELS) {
+          const interval = levelPointsInterval(criterion.max, level, DEFAULT_LEVEL_BANDS);
+          intervalRows.push([
+            level,
+            `${DEFAULT_LEVEL_BANDS[level].min}–${DEFAULT_LEVEL_BANDS[level].max} %`,
+            criterion.title,
+            criterion.max,
+            interval.min,
+            interval.max,
+          ]);
+        }
+      }
+    }
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(intervalRows), "Intervalles de niveaux");
 
     const metaRows = [
       ["Champ", "Valeur"],
@@ -402,13 +502,18 @@ import { readStoredState, writeStoredState, STORAGE_KEYS } from "./storage.js";
       ["Observations enseignant·e", state.meta.teacherNotes ?? ""],
       ["Exporté le", new Date().toLocaleString("fr-FR")],
     ];
-    const wsMeta = XLSX.utils.aoa_to_sheet(metaRows);
-    wsMeta["!cols"] = [{ wch: 26 }, { wch: 60 }];
-    XLSX.utils.book_append_sheet(wb, wsMeta, "Métadonnées");
-
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(metaRows), "Métadonnées");
     const fileName = `${(state.meta.projectName || "grille-competences").trim().replaceAll(/\s+/g, "_") || "grille-competences"}_${new Date().toISOString().slice(0, 10)}.xlsx`;
     XLSX.writeFile(wb, fileName);
     return true;
+  }
+
+  function confirmBeforeExport(state) {
+    const totals = computeTotals(state);
+    if (totals.complete) return true;
+    return window.confirm(
+      `La grille est incomplète : ${totals.evaluatedCount} critère(s) évalué(s) sur ${totals.totalCriteria}. Le total affiché est partiel et aucune note finale /20 ne sera exportée. Continuer ?`,
+    );
   }
 
   function promptAfterExport(state) {
@@ -420,9 +525,27 @@ import { readStoredState, writeStoredState, STORAGE_KEYS } from "./storage.js";
     const criterion = allCriteria().find((item) => item.id === criterionId);
     if (!criterion) return;
 
-    state.levels[criterionId] = state.levels[criterionId] === level ? "" : level;
+    const current = state.criteria[criterionId] ?? { level: null, note: null };
+    state.criteria[criterionId] = {
+      ...current,
+      level: current.level === level ? null : level,
+    };
     const mount = $("#rubricMount");
     if (mount) renderRubric(mount, state);
+    updateTotalsUI(state);
+    saveState(state);
+    $(`[data-level-btn="${criterionId}"][data-level="${level}"]`)?.focus();
+  }
+
+  function normalizeAssignedNote(input, state) {
+    const criterionId = input.getAttribute("data-assigned-note");
+    const criterion = allCriteria().find((item) => item.id === criterionId);
+    if (!criterionId || !criterion) return;
+
+    const value = normalizeNote(input.value, criterion.max, NOTE_STEP);
+    input.value = value === null ? "" : String(value);
+    const current = state.criteria[criterionId] ?? { level: null, note: null };
+    state.criteria[criterionId] = { ...current, note: value };
     updateTotalsUI(state);
     saveState(state);
   }
@@ -473,15 +596,45 @@ import { readStoredState, writeStoredState, STORAGE_KEYS } from "./storage.js";
         state.notes[id] = /** @type {HTMLTextAreaElement} */ (target).value;
         saveState(state);
       }
+      if (target.matches("[data-assigned-note]")) {
+        const criterionId = target.getAttribute("data-assigned-note");
+        if (!criterionId) return;
+        const current = state.criteria[criterionId] ?? { level: null, note: null };
+        state.criteria[criterionId] = {
+          ...current,
+          note: target.value === "" ? null : target.value,
+        };
+        updateTotalsUI(state);
+        saveState(state);
+      }
+    });
+
+    document.addEventListener("blur", (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLInputElement) || !target.matches("[data-assigned-note]")) return;
+      normalizeAssignedNote(target, state);
+    }, true);
+
+    document.addEventListener("keydown", (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLInputElement) || !target.matches("[data-assigned-note]") || event.key !== "Enter") return;
+      event.preventDefault();
+      normalizeAssignedNote(target, state);
+      target.blur();
     });
 
     $("#btnExport")?.addEventListener("click", () => {
+      if (!confirmBeforeExport(state)) return;
       downloadJson(state);
       promptAfterExport(state);
     });
 
     $("#btnExcel")?.addEventListener("click", () => {
+      if (!confirmBeforeExport(state)) return;
       if (downloadExcel(state)) promptAfterExport(state);
+    });
+    $("#btnPdf")?.addEventListener("click", () => {
+      if (confirmBeforeExport(state)) window.print();
     });
 
     $("#btnReset")?.addEventListener("click", () => {

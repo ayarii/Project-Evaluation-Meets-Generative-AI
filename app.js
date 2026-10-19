@@ -1,5 +1,3 @@
-import { clampScoreToBand, criterionPoints, DEFAULT_LEVEL_BANDS } from "./lib/scoring.js";
-
 const STORAGE_KEY = "edueval-ai-rubric:v2";
 const LEGACY_STORAGE_KEY = "edueval-ai-rubric:v1";
 
@@ -442,7 +440,10 @@ function bindInteractions(state) {
       const criterion = rubric.flatMap((section) => section.criteria).find((item) => item.id === id);
       if (!criterion) return;
       const value = target.value;
-      state.scores[id] = value === "" ? "" : clampScoreToBand("A", Number(value), DEFAULT_LEVEL_BANDS);
+      const numeric = Number(value);
+      state.scores[id] = value === "" || !Number.isFinite(numeric)
+        ? ""
+        : Math.min(Math.max(numeric, 0), criterion.max);
       updateTotalsUI(state);
       saveState(state);
     }

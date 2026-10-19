@@ -3,6 +3,7 @@ export const STORAGE_KEYS = Object.freeze({
   rubricV2: "edueval-ai-rubric:v2",
   competencesV1: "edueval-ai-competences:v1",
   competencesV2: "edueval-ai-competences:v2",
+  competencesV3: "edueval-ai-competences:v3",
 });
 
 export function readStoredState(storageKey, fallbackFactory, legacyKeys = [], storage = globalThis.localStorage) {

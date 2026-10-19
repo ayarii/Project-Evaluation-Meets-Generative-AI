@@ -2,42 +2,30 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 import {
-  LEVELS,
   DEFAULT_LEVEL_BANDS,
-  bandMidpoint,
-  clampScoreToBand,
-  criterionPoints,
-  makeEvaluation,
+  LEVELS,
+  NOTE_STEP,
   computeCompetenceTotals,
-  validateRubricStructure,
+  levelPointsInterval,
+  normalizeNote,
 } from "../lib/scoring.js";
-
-import { LEGACY_SCORES, migrateCompetencesV1 } from "../lib/migrate.js";
+import { CURRENT_VERSION, migrateCompetences } from "../lib/migrate.js";
+import { buildCompetenceExport } from "../lib/competence-export.js";
 
 const rubric = [
-  {
-    id: "tech",
-    max: 40,
-    criteria: [
-      { id: "tech_func", max: 30 },
-      { id: "tech_understand", max: 10 },
-    ],
-  },
-  {
-    id: "quality",
-    max: 30,
-    criteria: [
-      { id: "quality_code", max: 15 },
-      { id: "quality_ux", max: 15 },
-    ],
-  },
+  { id: "tech", max: 40, criteria: [{ id: "func", max: 30 }, { id: "understand", max: 10 }] },
+  { id: "quality", max: 30, criteria: [{ id: "code", max: 15 }, { id: "ux", max: 15 }] },
 ];
 
-test("LEVELS exports the expected order", () => {
-  assert.deepEqual(LEVELS, ["A", "B", "C", "D"]);
-});
+const tenCriterionRubric = [{
+  id: "all",
+  max: 100,
+  criteria: [30, 10, 15, 15, 8, 6, 6, 4, 3, 3].map((max, index) => ({ id: `c${index}`, max })),
+}];
 
-test("default bands respect the specification", () => {
+test("LEVELS exports A through D in order", () => {
+  assert.deepEqual(LEVELS, ["A", "B", "C", "D"]);
+  assert.equal(NOTE_STEP, 0.5);
   assert.deepEqual(DEFAULT_LEVEL_BANDS, {
     A: { min: 90, max: 100 },
     B: { min: 75, max: 89 },
@@ -46,225 +34,222 @@ test("default bands respect the specification", () => {
   });
 });
 
-test("band midpoint returns the expected value", () => {
-  assert.equal(bandMidpoint("A"), 95);
-  assert.equal(bandMidpoint("B"), 82);
-  assert.equal(bandMidpoint("C"), 67);
-  assert.equal(bandMidpoint("D"), 30);
+test("levelPointsInterval returns the B interval for a 30 point criterion", () => {
+  assert.deepEqual(levelPointsInterval(30, "B"), { min: 22.5, max: 26.7 });
+  assert.deepEqual(levelPointsInterval(20, "X", { X: { min: 50, max: 75 } }), { min: 10, max: 15 });
 });
 
-test("unknown band raises RangeError", () => {
-  assert.throws(() => bandMidpoint("Z"), RangeError);
+test("levelPointsInterval rounds decimal point bounds to tenths", () => {
+  assert.deepEqual(levelPointsInterval(15, "B"), { min: 11.3, max: 13.4 });
 });
 
-test("clampScoreToBand returns the band midpoint for invalid values", () => {
-  assert.equal(clampScoreToBand("A", ""), 95);
-  assert.equal(clampScoreToBand("B", null), 82);
-  assert.equal(clampScoreToBand("C", Number.NaN), 67);
+test("levelPointsInterval throws for an unknown level", () => {
+  assert.throws(() => levelPointsInterval(10, "Z"), RangeError);
 });
 
-test("clampScoreToBand bounds a score within the selected band", () => {
-  assert.equal(clampScoreToBand("A", 100), 100);
-  assert.equal(clampScoreToBand("A", 10), 90);
-  assert.equal(clampScoreToBand("D", 80), 59);
+test("normalizeNote leaves empty, null and invalid notes unassigned", () => {
+  assert.equal(normalizeNote("", 30), null);
+  assert.equal(normalizeNote(null, 30), null);
+  assert.equal(normalizeNote("  ", 30), null);
+  assert.equal(normalizeNote("not a number", 30), null);
 });
 
-test("clampScoreToBand raises on unknown level", () => {
-  assert.throws(() => clampScoreToBand("Z", 50), RangeError);
+test("normalizeNote preserves an explicitly entered zero", () => {
+  assert.equal(normalizeNote(0, 30), 0);
 });
 
-test("criterionPoints rounds to one decimal place", () => {
-  assert.equal(criterionPoints(30, 95), 28.5);
-  assert.equal(criterionPoints(10, 82), 8.2);
-  assert.equal(criterionPoints(15, 67), 10.1);
+test("normalizeNote bounds notes to the criterion maximum and minimum", () => {
+  assert.equal(normalizeNote(-2, 30), 0);
+  assert.equal(normalizeNote(40, 30), 30);
 });
 
-test("makeEvaluation fills the midpoint by default", () => {
-  const evaluation = makeEvaluation("C");
-  assert.deepEqual(evaluation, { level: "C", scorePct: 67, status: "evaluated" });
+test("normalizeNote rounds to the nearest half point", () => {
+  assert.equal(normalizeNote(2.24, 30), 2);
+  assert.equal(normalizeNote(2.25, 30), 2.5);
+  assert.equal(normalizeNote(2.74, 30), 2.5);
+  assert.equal(normalizeNote(2.75, 30), 3);
+  assert.equal(normalizeNote(2.8, 10, 0.25), 2.75);
 });
 
-test("makeEvaluation clamps the score within the selected interval", () => {
-  const evaluation = makeEvaluation("B", 100);
-  assert.equal(evaluation.scorePct, 89);
+test("criteria with no level or note are not evaluated", () => {
+  const totals = computeCompetenceTotals(rubric, {});
+  assert.equal(totals.byCriterion.func.status, "not_evaluated");
+  assert.equal(totals.evaluatedCount, 0);
+  assert.equal(totals.points, 0);
 });
 
-test("computeCompetenceTotals sums evaluated criteria in a section", () => {
-  const criteriaState = {
-    tech_func: { level: "A", scorePct: 95, status: "evaluated" },
-    tech_understand: { level: "B", scorePct: 82, status: "evaluated" },
-    quality_code: { level: "C", scorePct: 67, status: "evaluated" },
-    quality_ux: { level: "D", scorePct: 45, status: "evaluated" },
-  };
-
-  const totals = computeCompetenceTotals(rubric, criteriaState);
-  assert.equal(totals.totalCriteria, 4);
-  assert.equal(totals.evaluatedCount, 4);
-  assert.equal(totals.complete, true);
-  assert.equal(totals.points, 53.6);
-  assert.equal(totals.on20, 15.3);
+test("a level without a note is level_only, not zero", () => {
+  const totals = computeCompetenceTotals(rubric, { func: { level: "B", note: null } });
+  assert.equal(totals.byCriterion.func.status, "level_only");
+  assert.equal(totals.byCriterion.func.note, null);
+  assert.equal(totals.points, 0);
 });
 
-test("computeCompetenceTotals keeps partial totals open while incomplete", () => {
+test("a note without a valid level is note_only", () => {
+  const totals = computeCompetenceTotals(rubric, { func: { level: "unknown", note: 12 } });
+  assert.equal(totals.byCriterion.func.status, "note_only");
+  assert.equal(totals.byCriterion.func.level, null);
+  assert.equal(totals.points, 0);
+});
+
+test("a valid level and note make a criterion evaluated", () => {
+  const totals = computeCompetenceTotals(rubric, { func: { level: "B", note: 25 } });
+  assert.equal(totals.byCriterion.func.status, "evaluated");
+  assert.equal(totals.evaluatedCount, 1);
+  assert.equal(totals.points, 25);
+});
+
+test("corrupt imported notes are normalized to the criterion bounds", () => {
+  const totals = computeCompetenceTotals(rubric, { func: { level: "B", note: 99 } });
+  assert.equal(totals.byCriterion.func.note, 30);
+  assert.equal(totals.points, 30);
+});
+
+test("position includes notes on either interval boundary", () => {
   const totals = computeCompetenceTotals(rubric, {
-    tech_func: { level: "A", scorePct: 95, status: "evaluated" },
+    func: { level: "B", note: 22.5 },
+    understand: { level: "B", note: 8.9 },
   });
+  assert.equal(totals.byCriterion.func.position, "inside");
+  assert.equal(totals.byCriterion.understand.position, "inside");
+});
 
+test("position marks a note below its level interval", () => {
+  const totals = computeCompetenceTotals(rubric, { func: { level: "B", note: 20 } });
+  assert.equal(totals.byCriterion.func.position, "below");
+});
+
+test("position marks a note above its level interval", () => {
+  const totals = computeCompetenceTotals(rubric, { func: { level: "B", note: 29 } });
+  assert.equal(totals.byCriterion.func.position, "above");
+});
+
+test("incomplete totals sum only criteria with both a level and note", () => {
+  const totals = computeCompetenceTotals(rubric, {
+    func: { level: "B", note: 25 },
+    understand: { level: "A", note: null },
+    code: { level: null, note: 10 },
+  });
+  assert.equal(totals.points, 25);
+  assert.equal(totals.evaluatedCount, 1);
   assert.equal(totals.complete, false);
+});
+
+test("incomplete grids do not expose final scores", () => {
+  const totals = computeCompetenceTotals(rubric, { func: { level: "B", note: 25 } });
   assert.equal(totals.on100, null);
   assert.equal(totals.on20, null);
-  assert.equal(totals.evaluatedCount, 1);
+  assert.equal(totals.range20, null);
 });
 
-test("rangePoints tracks lower and upper bounds for each evaluated criterion", () => {
+test("level intervals count toward ranges even before notes are entered", () => {
+  const totals = computeCompetenceTotals(rubric, { func: { level: "B", note: null } });
+  assert.deepEqual(totals.rangePoints, { min: 22.5, max: 26.7 });
+});
+
+test("full ten-criterion B evaluation sums the manually entered notes", () => {
+  const notes = [26, 8.5, 13, 13, 7, 5, 5, 2.5, 1.5, 1];
+  const criteria = Object.fromEntries(notes.map((note, index) => [`c${index}`, { level: "B", note }]));
+  const totals = computeCompetenceTotals(tenCriterionRubric, criteria);
+  assert.equal(totals.complete, true);
+  assert.equal(totals.points, 82.5);
+  assert.equal(totals.on100, 82.5);
+  assert.equal(totals.on20, 16.5);
+});
+
+test("complete B evaluation reports the full level interval range", () => {
+  const criteria = Object.fromEntries(tenCriterionRubric[0].criteria.map(({ id }) => [id, { level: "B", note: 8 }]));
+  const totals = computeCompetenceTotals(tenCriterionRubric, criteria);
+  assert.deepEqual(totals.rangePoints, { min: 75, max: 89 });
+  assert.deepEqual(totals.range20, { min: 15, max: 17.8 });
+});
+
+test("section totals report evaluated weights and ranges", () => {
   const totals = computeCompetenceTotals(rubric, {
-    tech_func: { level: "A", scorePct: 95, status: "evaluated" },
-    tech_understand: { level: "B", scorePct: 82, status: "evaluated" },
-    quality_code: { level: "C", scorePct: 67, status: "evaluated" },
-    quality_ux: { level: "D", scorePct: 45, status: "evaluated" },
+    func: { level: "B", note: 25 },
+    understand: { level: "A", note: 9 },
+    code: { level: "C", note: null },
   });
-
-  assert.equal(totals.rangePoints.min, 43.5);
-  assert.equal(totals.rangePoints.max, 58.8);
-});
-
-test("section totals include points and evaluation counts", () => {
-  const totals = computeCompetenceTotals(rubric, {
-    tech_func: { level: "A", scorePct: 95, status: "evaluated" },
-    tech_understand: { level: "B", scorePct: 82, status: "evaluated" },
+  assert.deepEqual(totals.bySection.tech, {
+    max: 40,
+    total: 34,
+    evaluated: 2,
+    levelCount: 2,
+    points: 34,
+    maxEvaluated: 40,
+    range: { min: 31.5, max: 36.7 },
   });
-
-  assert.equal(totals.bySection.tech.points, 36.7);
-  assert.equal(totals.bySection.tech.evaluated, 2);
-  assert.equal(totals.bySection.quality.points, 0);
+  assert.equal(totals.bySection.quality.levelCount, 1);
+  const roundedQualityRange = computeCompetenceTotals(rubric, {
+    code: { level: "B", note: null },
+    ux: { level: "B", note: null },
+  }).bySection.quality.range;
+  assert.deepEqual(roundedQualityRange, { min: 22.6, max: 26.8 });
 });
 
-test("not_evaluated entries are excluded from totals", () => {
-  const totals = computeCompetenceTotals(rubric, {
-    tech_func: { level: "A", scorePct: 95, status: "not_evaluated" },
-    tech_understand: { level: "B", scorePct: 82, status: "evaluated" },
-    quality_code: { level: "C", scorePct: 67, status: "evaluated" },
-    quality_ux: { level: "D", scorePct: 45, status: "evaluated" },
+test("byCriterion exposes status, normalized note, interval and position", () => {
+  const totals = computeCompetenceTotals(rubric, { func: { level: "B", note: 20 } });
+  assert.deepEqual(totals.byCriterion.func, {
+    status: "evaluated",
+    level: "B",
+    note: 20,
+    interval: { min: 22.5, max: 26.7 },
+    position: "below",
   });
-
-  assert.equal(totals.evaluatedCount, 3);
-  assert.equal(totals.complete, false);
 });
 
-test("validateRubricStructure accepts a valid structure", () => {
-  const result = validateRubricStructure(rubric);
-  assert.equal(result.valid, true);
-  assert.equal(result.totalMax, 70);
+test("v1 migration preserves levels and observations but creates no notes", () => {
+  const migrated = migrateCompetences({
+    version: 1,
+    meta: { projectName: "Legacy" },
+    levels: { func: "A", understand: "" },
+    notes: { func: "teacher comment" },
+  });
+  assert.equal(migrated.version, CURRENT_VERSION);
+  assert.deepEqual(migrated.criteria, { func: { level: "A", note: null }, understand: { level: null, note: null } });
+  assert.deepEqual(migrated.notes, { func: "teacher comment" });
 });
 
-test("validateRubricStructure flags duplicates and mismatched section maxima", () => {
-  const result = validateRubricStructure([
-    {
-      id: "tech",
-      max: 41,
-      criteria: [
-        { id: "a", max: 20 },
-        { id: "a", max: 20 },
-      ],
-    },
-  ]);
-
-  assert.equal(result.valid, false);
-  assert.ok(result.issues.some((issue) => issue.includes("duplicate")));
-  assert.ok(result.issues.some((issue) => issue.includes("max mismatch")));
+test("v2 migration preserves levels but drops generated scores and proof data", () => {
+  const migrated = migrateCompetences({
+    version: 2,
+    meta: { projectName: "Intermediate" },
+    criteria: { func: { level: "B", scorePct: 82, status: "evaluated", url: "https://example.test" } },
+    notes: { func: "Observation" },
+    proofs: { func: [{ url: "https://example.test", status: "seen" }] },
+  });
+  assert.deepEqual(migrated.criteria, { func: { level: "B", note: null } });
+  assert.deepEqual(migrated.notes, { func: "Observation" });
+  assert.equal("proofs" in migrated, false);
 });
 
-test("validateRubricStructure fails on non-array inputs", () => {
-  const result = validateRubricStructure(null);
-  assert.equal(result.valid, false);
-  assert.ok(result.issues.length > 0);
+test("v3 migration is idempotent", () => {
+  const state = { version: 3, meta: { projectName: "Current" }, criteria: { func: { level: "C", note: 18 } }, notes: {} };
+  assert.deepEqual(migrateCompetences(state), state);
 });
 
-test("legacy scores use the expected defaults", () => {
-  assert.equal(LEGACY_SCORES.A, 95);
-  assert.equal(LEGACY_SCORES.B, 82);
-  assert.equal(LEGACY_SCORES.C, 67);
-  assert.equal(LEGACY_SCORES.D, 45);
+test("migration returns an empty v3 state for invalid inputs", () => {
+  for (const invalid of [null, 42, [], "invalid"]) {
+    assert.deepEqual(migrateCompetences(invalid), { version: 3, meta: {}, criteria: {}, notes: {} });
+  }
 });
 
-test("migrateCompetencesV1 converts legacy level entries to version 2", () => {
-  const migrated = migrateCompetencesV1({
+test("JSON export contains v3 manual notes, intervals and totals only", () => {
+  const payload = buildCompetenceExport(rubric, {
     meta: { projectName: "Demo" },
-    levels: { tech_func: "A", tech_understand: "C" },
-    notes: { tech_func: "note" },
+    criteria: { func: { level: "B", note: 25 } },
+    notes: { func: "Justification" },
   });
-
-  assert.equal(migrated.version, 2);
-  assert.deepEqual(migrated.criteria.tech_func, { level: "A", scorePct: 95, status: "migrated_default" });
-  assert.deepEqual(migrated.criteria.tech_understand, { level: "C", scorePct: 67, status: "migrated_default" });
-  assert.equal(migrated.meta.projectName, "Demo");
-});
-
-test("migrateCompetencesV1 converts blank legacy entries to not_evaluated", () => {
-  const migrated = migrateCompetencesV1({
-    levels: { tech_func: "" },
+  assert.equal(payload.version, 3);
+  assert.deepEqual(payload.criteria.func, {
+    level: "B",
+    note: 25,
+    status: "evaluated",
+    interval: { min: 22.5, max: 26.7 },
   });
-
-  assert.deepEqual(migrated.criteria.tech_func, { level: null, scorePct: null, status: "not_evaluated" });
-});
-
-test("migrateCompetencesV1 is idempotent on version 2 inputs", () => {
-  const original = { version: 2, meta: { projectName: "Ok" }, criteria: { tech_func: { level: "B", scorePct: 82, status: "evaluated" } }, notes: { tech_func: "ok" } };
-  const migrated = migrateCompetencesV1(original);
-  assert.deepEqual(migrated, original);
-});
-
-test("migrateCompetencesV1 sanitizes invalid input without throwing", () => {
-  assert.doesNotThrow(() => migrateCompetencesV1(null));
-  assert.doesNotThrow(() => migrateCompetencesV1([]));
-  assert.doesNotThrow(() => migrateCompetencesV1(42));
-  assert.deepEqual(migrateCompetencesV1([]), { version: 2, meta: {}, criteria: {}, notes: {} });
-});
-
-test("empty state migration defaults to a clean version 2 payload", () => {
-  const migrated = migrateCompetencesV1({});
-  assert.equal(migrated.version, 2);
-  assert.deepEqual(migrated.criteria, {});
-  assert.deepEqual(migrated.notes, {});
-});
-
-test("migrateCompetencesV1 tolerates malformed notes and metadata", () => {
-  const migrated = migrateCompetencesV1({ levels: { tech_func: "A" }, notes: "bad", meta: null });
-  assert.equal(migrated.meta.projectName, undefined);
-  assert.deepEqual(migrated.criteria.tech_func, { level: "A", scorePct: 95, status: "migrated_default" });
-});
-
-test("criterionPoints handles zero and negative values safely", () => {
-  assert.equal(criterionPoints(10, 0), 0);
-  assert.equal(criterionPoints(10, -10), -1);
-});
-
-test("makeEvaluation rejects unknown levels with RangeError", () => {
-  assert.throws(() => makeEvaluation("Z"), RangeError);
-});
-
-test("computeCompetenceTotals ignores invalid states and malformed entries", () => {
-  const totals = computeCompetenceTotals(rubric, {
-    tech_func: null,
-    tech_understand: { level: "B", scorePct: 82, status: "migrated_default" },
-    quality_code: { level: "Z", scorePct: 90, status: "evaluated" },
-    quality_ux: { level: "D", scorePct: 45, status: "evaluated" },
-  });
-
-  assert.equal(totals.evaluatedCount, 2);
-  assert.equal(totals.complete, false);
-});
-
-test("computeCompetenceTotals handles a fully evaluated set with all B values", () => {
-  const totals = computeCompetenceTotals(rubric, {
-    tech_func: { level: "B", scorePct: 82, status: "evaluated" },
-    tech_understand: { level: "B", scorePct: 82, status: "evaluated" },
-    quality_code: { level: "B", scorePct: 82, status: "evaluated" },
-    quality_ux: { level: "B", scorePct: 82, status: "evaluated" },
-  });
-
-  assert.equal(totals.points, 57.4);
-  assert.equal(totals.on20, 16.4);
-  assert.equal(totals.range20.min, 15.0);
-  assert.equal(totals.range20.max, 17.8);
+  assert.deepEqual(payload.sections.tech, { points: 25, range: { min: 22.5, max: 26.7 } });
+  assert.equal(payload.totals.complete, false);
+  assert.equal(payload.totals.points, 25);
+  assert.equal(JSON.stringify(payload).includes("scorePct"), false);
+  assert.equal(JSON.stringify(payload).includes("proof"), false);
 });

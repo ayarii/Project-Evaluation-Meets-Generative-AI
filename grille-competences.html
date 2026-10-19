@@ -25,25 +25,26 @@
           <p class="kicker">Outil enseignant</p>
           <h1>Grille critériée<br /><span>par compétences (niveaux A–D)</span></h1>
           <p class="sub">
-            Sélectionnez un niveau de maîtrise par sous-critère, ajoutez vos observations, puis exportez.
-            Le score chiffré reste une conversion optionnelle.
+            Sélectionnez un niveau et saisissez la note attribuée pour chaque sous-critère. Les intervalles sont indicatifs.
           </p>
         </div>
 
         <div class="score-card" aria-live="polite">
           <div class="score-top">
             <div>
-              <div class="label">Critères renseignés</div>
+              <div class="label">Critères évalués</div>
               <div class="score" style="font-size:22px;">
                 <span id="levelsFilled">0 / 10</span>
               </div>
               <div class="score-converted" style="font-size:13px;">
-                Score converti : <span id="totalScore">—</span><span class="score-den">/ 100</span>
-                · ≈ <span id="totalScore20">—</span><span class="score-den">/ 20</span>
+                <span id="totalLabel" aria-live="polite">Total partiel</span> :
+                <span id="totalScore">0</span><span class="score-den">/ 100</span>
+                · <span id="totalScore20">—</span><span class="score-den">/ 20</span>
               </div>
               <div class="small muted" id="scoreHint" style="margin-top:6px;">
-                10 critère(s) restant(s) pour calculer le score converti
+                0 critère(s) évalué(s) sur 10
               </div>
+              <div class="small muted total-range" id="totalRange" aria-live="polite">Fourchette des niveaux : —</div>
             </div>
             <div class="score-actions">
               <button id="btnPdf" class="btn btn-ghost" type="button">Export (PDF)</button>
@@ -139,6 +140,13 @@
         </form>
       </section>
 
+      <div class="callout migration-notice" id="migrationNotice" role="status" hidden>
+        Un niveau choisi sans note n’est pas compté comme zéro. Si ce bilan vient d’une ancienne version, ses niveaux ont été conservés, mais les notes sont à saisir manuellement.
+      </div>
+      <div class="callout export-warning" id="exportWarning" role="status" hidden>
+        La grille est incomplète : le total affiché est partiel et aucune note finale /20 n’est calculée.
+      </div>
+
       <section class="card">
         <div class="card-head">
           <h2>Comment lire cette grille</h2>
@@ -182,35 +190,24 @@
 
       <section class="card">
         <div class="card-head">
-          <h2>Conversion optionnelle A/B/C/D → points</h2>
+          <h2>Intervalles indicatifs des niveaux</h2>
         </div>
         <p class="small muted">
-          À utiliser uniquement si un score chiffré reste nécessaire (bulletin, moyenne institutionnelle…).
-          Le niveau reste la référence pédagogique ; le point n'en est qu'une traduction (milieu de fourchette).
+          Les notes sont saisies par l'évaluateur ; les intervalles sont indicatifs. Choisir un niveau ne calcule ni ne préremplit une note.
         </p>
         <div class="conv-table-wrap">
           <table class="conv-table">
             <thead>
               <tr>
-                <th>Sous-critère</th>
-                <th>Poids max</th>
-                <th>A (90–100 %)</th>
-                <th>B (75–89 %)</th>
-                <th>C (60–74 %)</th>
-                <th>D (&lt; 60 %)</th>
+                <th>Niveau</th>
+                <th>Intervalle indicatif</th>
               </tr>
             </thead>
             <tbody>
-              <tr><td>Fonctionnalités attendues</td><td class="mono">30</td><td class="mono">27–30</td><td class="mono">22,5–26,9</td><td class="mono">18–22,4</td><td class="mono">&lt; 18</td></tr>
-              <tr><td>Compréhension technique</td><td class="mono">10</td><td class="mono">9–10</td><td class="mono">7,5–8,9</td><td class="mono">6–7,4</td><td class="mono">&lt; 6</td></tr>
-              <tr><td>Qualité code &amp; projet</td><td class="mono">15</td><td class="mono">13,5–15</td><td class="mono">11,25–13,4</td><td class="mono">9–11,2</td><td class="mono">&lt; 9</td></tr>
-              <tr><td>UX / UI</td><td class="mono">15</td><td class="mono">13,5–15</td><td class="mono">11,25–13,4</td><td class="mono">9–11,2</td><td class="mono">&lt; 9</td></tr>
-              <tr><td>Git / GitHub</td><td class="mono">8</td><td class="mono">7,2–8</td><td class="mono">6–7,1</td><td class="mono">4,8–5,9</td><td class="mono">&lt; 4,8</td></tr>
-              <tr><td>Autonomie &amp; initiative</td><td class="mono">6</td><td class="mono">5,4–6</td><td class="mono">4,5–5,3</td><td class="mono">3,6–4,4</td><td class="mono">&lt; 3,6</td></tr>
-              <tr><td>Organisation &amp; planification</td><td class="mono">6</td><td class="mono">5,4–6</td><td class="mono">4,5–5,3</td><td class="mono">3,6–4,4</td><td class="mono">&lt; 3,6</td></tr>
-              <tr><td>Niveau d'usage IA</td><td class="mono">4</td><td class="mono">3,6–4</td><td class="mono">3–3,5</td><td class="mono">2,4–2,9</td><td class="mono">&lt; 2,4</td></tr>
-              <tr><td>Justification usage IA</td><td class="mono">3</td><td class="mono">2,7–3</td><td class="mono">2,25–2,6</td><td class="mono">1,8–2,2</td><td class="mono">&lt; 1,8</td></tr>
-              <tr><td>Esprit critique face à l'IA</td><td class="mono">3</td><td class="mono">2,7–3</td><td class="mono">2,25–2,6</td><td class="mono">1,8–2,2</td><td class="mono">&lt; 1,8</td></tr>
+              <tr><td>A — Excellent</td><td class="mono">90–100 %</td></tr>
+              <tr><td>B — Maîtrisé</td><td class="mono">75–89 %</td></tr>
+              <tr><td>C — En cours d'acquisition</td><td class="mono">60–74 %</td></tr>
+              <tr><td>D — Non acquis</td><td class="mono">0–59 %</td></tr>
             </tbody>
           </table>
         </div>
@@ -240,8 +237,8 @@
               par rapport aux autres, et un niveau A n'est pas contingenté (plusieurs étudiant·es peuvent
               l'atteindre). L'échelle A→D est <b>ordinale</b> : elle indique un ordre de maîtrise croissant,
               mais pas un rapport numérique proportionnel entre les niveaux — contrairement aux points, un « A »
-              ne vaut pas « deux fois » un « C ». La conversion en points ci-dessus est un pont optionnel vers
-              un système de notation chiffrée, pas une redéfinition de la nature qualitative de l'évaluation.
+              ne vaut pas « deux fois » un « C ». L'intervalle associé au niveau est indicatif ; la note en points
+              reste choisie et saisie par l'évaluateur·rice, indépendamment de cet intervalle.
             </p>
           </div>
         </div>
@@ -255,6 +252,7 @@
       </footer>
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script type="module" src="./competences.js" defer></script>
   </body>
 </html>
