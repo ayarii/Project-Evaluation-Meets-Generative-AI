@@ -29,7 +29,7 @@ Le projet propose un cadre d'évaluation reposant sur trois principes :
 
 1. **Critères explicites** : chaque axe se décline en indicateurs observables, preuves attendues et niveaux de la taxonomie de Bloom.
 2. **Usage de l'IA traçable** : une échelle N1–N5 distingue l'absence d'IA de l'exploration créative, étayée par des preuves concrètes.
-3. **Deux modes d'évaluation** : une grille chiffrée sur 100 points ou une grille qualitative par niveaux A–D, avec conversion optionnelle.
+3. **Deux modes d'évaluation** : une grille chiffrée sur 100 points ou une grille par compétences A–D avec saisie manuelle des notes.
 
 ---
 
@@ -38,12 +38,14 @@ Le projet propose un cadre d'évaluation reposant sur trois principes :
 - ✅ Grille pondérée sur **100 points** avec calcul automatique du total
 - ✅ Conversion approximative **/20** affichée en temps réel
 - ✅ Grille par **compétences (niveaux A–D)** pour une évaluation critériée
+- ✅ Note saisie par l'évaluateur pour chaque critère ; les intervalles associés aux niveaux restent indicatifs
+- ✅ Totaux partiels et fourchettes par critère, axe et grille
 - ✅ Échelle d'usage de l'IA **N1–N5**
 - ✅ **Export PDF, Excel, CSV et JSON**
 - ✅ **Sauvegarde automatique dans le navigateur** : reprise d'une évaluation à tout moment
-- ✅ Migration locale des données v1 → v2 pour conserver les évaluations existantes
+- ✅ Migration locale des grilles par compétences v1/v2 → v3 ; niveaux et observations sont conservés, les notes doivent être ressaisies
 - ✅ Réinitialisation du formulaire après chaque soumission, avec confirmation explicite
-- ✅ Aucune dépendance externe requise pour l'usage de base ; le CSV sert de repli si l'export Excel n'est pas disponible
+- ✅ Aucune dépendance externe requise pour l'usage de base ; le CSV sert de repli si la bibliothèque Excel en ligne n'est pas disponible
 
 ---
 
@@ -65,7 +67,9 @@ Adaptée au bulletin et au suivi chiffré.
 ### 2. Grille par compétences (A–D)
 
 Évaluation critériée par **niveaux de maîtrise observables**.
-Le score chiffré reste une conversion **optionnelle**.
+Pour chaque critère, l'évaluateur choisit un niveau et saisit séparément la note en points. Le niveau n'invente ni ne préremplit une note ; son intervalle est affiché à titre indicatif. La note finale sur 20 apparaît uniquement lorsque niveau et note sont renseignés pour tous les critères.
+
+Les anciennes évaluations conservent leurs niveaux et observations, mais leurs notes calculées automatiquement sont supprimées lors de la migration : les notes doivent être saisies à nouveau.
 
 ---
 
@@ -87,7 +91,7 @@ observables**, et pas seulement par une déclaration de l'étudiant·e.
 ## 🚀 Utilisation
 
 1. **Renseigner les informations du projet** : nom, étudiant·e(s), lien GitHub, périmètre individuel ou collectif.
-2. **Évaluer critère par critère** : attribuer un score (grille pondérée) ou un niveau A–D (grille par compétences) et documenter les observations.
+2. **Évaluer critère par critère** : attribuer un score (grille pondérée) ou un niveau A–D et une note manuelle (grille par compétences), puis documenter les observations.
 3. **Vérifier l'usage de l'IA** : contrôler la cohérence entre le niveau déclaré, les preuves et la soutenance orale.
 4. **Soumettre et exporter** : export PDF, Excel ou JSON.
 

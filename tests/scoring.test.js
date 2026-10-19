@@ -50,6 +50,7 @@ test("levelPointsInterval throws for an unknown level", () => {
 test("normalizeNote leaves empty, null and invalid notes unassigned", () => {
   assert.equal(normalizeNote("", 30), null);
   assert.equal(normalizeNote(null, 30), null);
+  assert.equal(normalizeNote("  ", 30), null);
   assert.equal(normalizeNote("not a number", 30), null);
 });
 
@@ -179,6 +180,11 @@ test("section totals report evaluated weights and ranges", () => {
     range: { min: 31.5, max: 36.7 },
   });
   assert.equal(totals.bySection.quality.levelCount, 1);
+  const roundedQualityRange = computeCompetenceTotals(rubric, {
+    code: { level: "B", note: null },
+    ux: { level: "B", note: null },
+  }).bySection.quality.range;
+  assert.deepEqual(roundedQualityRange, { min: 22.6, max: 26.8 });
 });
 
 test("byCriterion exposes status, normalized note, interval and position", () => {
