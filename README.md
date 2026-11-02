@@ -130,6 +130,36 @@ Licence à définir. Voir le fichier [`LICENSE`](LICENSE) une fois ajouté.
 
 ---
 
+## 📝 Donnez votre avis sur EduEval AI
+
+Vous avez testé **EduEval AI**, l'outil d'évaluation des projets étudiants à l'ère de l'IA générative ? Aidez-nous à l'améliorer en répondant à une courte enquête de satisfaction.
+
+👉 **[Répondre à l'enquête](https://forms.cloud.microsoft/r/aMQ0MVRARP)**
+
+| | |
+|---|---|
+| ⏱ **Durée** | 5 à 8 minutes |
+| 🔒 **Anonymat** | Aucune donnée d'identité n'est demandée |
+| ✅ **Participation** | Volontaire, vous pouvez vous arrêter à tout moment |
+| 👥 **Public** | Enseignant·es et évaluateur·rices ayant testé la grille |
+
+### Ce que l'enquête explore
+
+- La prise en main et l'utilisabilité de l'outil
+- La clarté et la pertinence des critères
+- La grille pondérée (100 points, conversion /20)
+- La grille par compétences (niveaux A–D)
+- L'échelle d'usage de l'IA (N1–N5)
+- L'équité et la fiabilité perçues
+- Les fonctionnalités (export PDF/Excel/JSON, sauvegarde automatique, reprise d'une évaluation)
+- La valeur pédagogique et l'intention d'utilisation
+  
+### Utilisation des données
+
+Les réponses sont analysées de façon agrégée, uniquement pour améliorer l'outil.
+
+Merci pour votre contribution ! 🙏
+
 ## 👩‍🏫 Auteur·e
 
 Projet développé par **[ayarii](https://github.com/ayarii)**.
